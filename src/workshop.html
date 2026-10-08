@@ -1,0 +1,876 @@
+<div id="wsp-workshop">
+  <div class="wsp-heading">
+    <h2>A system of location</h2>
+    <span class="text-small">Washington Square Park · spaces + occupants</span>
+  </div>
+  <div class="viz-row" id="wsp-modes" aria-label="Workshop question">
+    <button type="button" class="btn" data-mode="space" aria-pressed="true">Coordinate system</button>
+    <button type="button" class="btn" data-mode="object" aria-pressed="false">Object → location</button>
+    <button type="button" class="btn" data-mode="occupancy" aria-pressed="false">Location → occupant</button>
+    <button type="button" class="btn" data-mode="frame" aria-pressed="false">Reference frame</button>
+    <button type="button" class="btn" data-mode="clues" aria-pressed="false">Infer a location</button>
+  </div>
+  <div class="wsp-control-area">
+    <div id="wsp-space-controls">
+      <div class="wsp-coordinate-fields">
+        <label class="form-label">Locate by
+          <select class="form-select" id="wsp-system">
+            <option value="cell">Space ID</option>
+            <option value="local">X east, Y north · m</option>
+            <option value="gps">Latitude, longitude</option>
+          </select>
+        </label>
+        <label class="form-label"><span id="wsp-query-label">Space address</span>
+          <input class="form-control tabular-nums" id="wsp-query" value="WSP-K10" autocomplete="off" spellcheck="false" aria-describedby="wsp-system-note">
+        </label>
+        <div class="wsp-locate"><button class="btn btn-primary" type="button" id="wsp-locate">Locate</button></div>
+      </div>
+      <div class="viz-row wsp-space-options">
+        <label class="form-label" id="wsp-origin-label" hidden>Origin
+          <select class="form-select" id="wsp-origin">
+            <option value="fountain">Fountain · (0, 0)</option>
+            <option value="arch">Arch midpoint · (0, 0)</option>
+          </select>
+        </label>
+        <label class="form-check"><input class="form-check-input" type="checkbox" id="wsp-grid-toggle" checked><span class="form-check-label">20 m grid</span></label>
+        <label class="form-check"><input class="form-check-input" type="checkbox" id="wsp-ids-toggle" checked><span class="form-check-label">Space IDs</span></label>
+        <span class="text-small" id="wsp-system-note">Columns west → east · rows south → north</span>
+      </div>
+      <div class="text-destructive text-small" id="wsp-query-error" role="alert" hidden></div>
+    </div>
+    <div class="viz-controls" id="wsp-object-controls">
+      <label class="form-label">Referent
+        <select class="form-select" id="wsp-object">
+          <option value="arch">Washington Square Arch</option>
+          <option value="fountain">Washington Square Fountain</option>
+          <option value="bench">Bench A · workshop prop</option>
+          <option value="visitor">Visitor A · simulated</option>
+        </select>
+      </label>
+      <label class="form-label" id="wsp-frame-label" hidden>Reference frame
+        <select class="form-select" id="wsp-frame">
+          <option value="visitor">Visitor A's viewpoint</option>
+          <option value="compass">Compass directions</option>
+          <option value="coordinates">Local coordinates</option>
+        </select>
+      </label>
+    </div>
+    <div class="viz-controls" id="wsp-occupancy-controls" hidden>
+      <label class="form-label">Ground location · 0.6 m sample
+        <select class="form-select" id="wsp-place">
+          <option value="under">Beneath the arch</option>
+          <option value="pier">Western arch pier</option>
+          <option value="fountain">Fountain basin</option>
+          <option value="bench">Bench A</option>
+          <option value="plaza">Open plaza</option>
+          <option value="custom" disabled>Selected ground point</option>
+        </select>
+      </label>
+      <div class="viz-row">
+        <button type="button" class="btn" id="wsp-bring">Move visitor here</button>
+        <button type="button" class="btn" id="wsp-away">Move visitor away</button>
+      </div>
+    </div>
+    <div id="wsp-heading-controls" hidden>
+      <div class="viz-row">
+        <label for="wsp-heading">Visitor heading <span class="tabular-nums" id="wsp-heading-value">0° · N</span></label>
+        <button type="button" class="btn" id="wsp-turn">Turn 180°</button>
+        <button type="button" class="btn" id="wsp-move" aria-pressed="false">Place visitor</button>
+      </div>
+      <input class="form-range" type="range" min="0" max="355" step="5" value="0" id="wsp-heading" aria-label="Visitor heading clockwise from north">
+    </div>
+    <div class="viz-row" id="wsp-clue-controls" hidden>
+      <label class="form-label">Location description
+        <select class="form-select" id="wsp-clue">
+          <option value="0">1 · Somewhere in this park</option>
+          <option value="1">2 · Within 20 m of the arch</option>
+          <option value="2">3 · Beneath the marble arch</option>
+        </select>
+      </label>
+      <span id="wsp-candidate-count" class="tabular-nums">4 marked candidates</span>
+    </div>
+  </div>
+  <div class="wsp-location-readout text-small tabular-nums" id="wsp-location-readout" aria-live="polite"></div>
+  <div class="wsp-stage" id="wsp-stage">
+    <div id="wsp-canvas" role="img" aria-label="Interactive three-dimensional Washington Square Park model. The arch is northeast of the fountain. Controls above offer equivalent keyboard interaction."></div>
+    <div id="wsp-labels" aria-hidden="true"></div>
+    <div class="wsp-stage-top">
+      <span class="text-small" id="wsp-hint">Drag to orbit · scroll to zoom · click an object</span>
+      <label class="sr-only" for="wsp-view">Camera view</label>
+      <div class="wsp-view-control"><select class="form-select" id="wsp-view" aria-label="Camera view">
+        <option value="plaza">Plaza view</option>
+        <option value="map">North-up view</option>
+        <option value="park">Whole park</option>
+        <option value="eye">Visitor's eye</option>
+      </select></div>
+    </div>
+    <div class="wsp-stage-bottom text-small"><span id="wsp-stage-legend">20 m cells · X east / Y north · ground level</span><span id="wsp-camera-note">Camera orbit does not turn the visitor</span></div>
+    <div id="wsp-loading" role="status">Loading the park…</div>
+  </div>
+  <div class="wsp-answer" role="status" aria-live="polite" id="wsp-answer">Washington Square Arch · northern entrance at the foot of Fifth Avenue.</div>
+  <div class="wsp-footer text-small">
+    <span>Workshop cells, not property parcels · modeled occupants · approximate GPS.</span>
+    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>
+  </div>
+</div>
+<style>
+  #wsp-workshop { color:var(--foreground); }
+  #wsp-workshop [hidden] { display:none !important; }
+  #wsp-workshop .wsp-heading { display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px; }
+  #wsp-workshop .wsp-heading h2 { margin:0; }
+  #wsp-workshop .wsp-control-area { margin:12px 0; }
+  #wsp-workshop .wsp-coordinate-fields { display:grid;grid-template-columns:minmax(150px,1fr) minmax(160px,1.3fr) auto;gap:12px;align-items:end; }
+  #wsp-workshop .wsp-locate { padding-bottom:1px; }
+  #wsp-workshop .wsp-space-options { margin-top:10px; }
+  #wsp-workshop .wsp-location-readout { margin-bottom:8px;min-height:20px; }
+  #wsp-workshop .wsp-label.wsp-grid-label { background:transparent; }
+  #wsp-workshop .wsp-label.wsp-grid-label.selected { background:var(--background);font-weight:500; }
+  #wsp-workshop .wsp-stage { position:relative;height:470px;overflow:hidden; }
+  #wsp-workshop #wsp-canvas, #wsp-workshop #wsp-labels { position:absolute;inset:0; }
+  #wsp-workshop #wsp-canvas canvas { display:block;width:100%;height:100%;touch-action:none;cursor:grab; }
+  #wsp-workshop #wsp-canvas canvas:active { cursor:grabbing; }
+  #wsp-workshop #wsp-labels { pointer-events:none; }
+  #wsp-workshop .wsp-label { position:absolute;transform:translate(-50%,-100%);color:var(--foreground);background:var(--background);padding:2px 5px;white-space:nowrap; }
+  #wsp-workshop .wsp-stage-top { position:absolute;top:10px;left:10px;right:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;pointer-events:none; }
+  #wsp-workshop .wsp-stage-top > span { background:var(--background);padding:4px;max-width:55%;flex:1; }
+  #wsp-workshop .wsp-view-control { flex:0 0 145px;pointer-events:auto; }
+  #wsp-workshop .wsp-stage-bottom { position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-between;gap:12px;pointer-events:none; }
+  #wsp-workshop .wsp-stage-bottom span { background:var(--background);padding:2px 4px; }
+  #wsp-workshop .wsp-answer { padding:14px 0 10px;min-height:48px; }
+  #wsp-workshop .wsp-footer { display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px; }
+  #wsp-workshop #wsp-loading { position:absolute;inset:0;display:grid;place-content:center;background:var(--background); }
+  @media (max-width:520px) {
+    #wsp-workshop .wsp-coordinate-fields { grid-template-columns:minmax(0,1fr) auto; }
+    #wsp-workshop .wsp-coordinate-fields > label:first-child { grid-column:1/-1; }
+    #wsp-workshop .wsp-stage { height:410px; }
+    #wsp-workshop #wsp-camera-note { display:none; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script>
+(function () {
+  const root = document.getElementById('wsp-workshop');
+  const el = function(id) { return root.querySelector('#wsp-' + id); };
+  const loading = el('loading');
+  try {
+    if (!window.THREE || !window.d3) throw new Error('The 3D library could not load. Reopen this view with an internet connection.');
+    const DATA = {"origin_lonlat":[-73.99745591666667,40.7308229],"features":{"park":{"geometry":{"type":"Polygon","coordinates":[[[-73.9965594,40.729649],[-73.9965667,40.7296414],[-73.9965717,40.7296361],[-73.9965832,40.7296307],[-73.9965971,40.7296307],[-73.9966028,40.7296321],[-73.9966186,40.729636],[-73.9972229,40.729933],[-73.997436,40.7300377],[-73.9979786,40.7303043],[-73.998105,40.7303665],[-73.9987536,40.7306852],[-73.9988773,40.730746],[-73.9994859,40.731045],[-73.9995048,40.7310543],[-73.9995125,40.7310599],[-73.9995149,40.7310616],[-73.9995207,40.7310732],[-73.999518,40.731086],[-73.9995164,40.7310906],[-73.999512,40.7310982],[-73.9995,40.7311129],[-73.9991151,40.731561],[-73.9990348,40.7316563],[-73.9986368,40.7321262],[-73.9986285,40.7321356],[-73.998616,40.7321423],[-73.9986005,40.7321463],[-73.9985827,40.7321448],[-73.9985667,40.7321401],[-73.9985538,40.732134],[-73.9977524,40.7317424],[-73.9971013,40.7314233],[-73.9969375,40.7313443],[-73.9969084,40.7313308],[-73.9956907,40.7307352],[-73.9956733,40.7307221],[-73.9956656,40.7307113],[-73.995666,40.7306999],[-73.995669,40.7306926],[-73.9956708,40.7306882],[-73.9956814,40.7306743],[-73.9960879,40.730201],[-73.9961631,40.7301117],[-73.9965594,40.729649]]]},"approximate_center_lonlat":[-73.99770591818182,40.73087441136364]},"arch":{"geometry":{"type":"Polygon","coordinates":[[[-73.9970293,40.731162],[-73.9972203,40.7312544],[-73.9971757,40.7313074],[-73.9969847,40.7312151],[-73.9970293,40.731162]]]},"approximate_center_lonlat":[-73.9971025,40.731234725]},"fountain":{"geometry":{"type":"Polygon","coordinates":[[[-73.997448,40.7309279],[-73.9974824,40.7309253],[-73.9975149,40.7309164],[-73.9975435,40.7309017],[-73.9975664,40.7308821],[-73.9975823,40.7308588],[-73.99759,40.7308333],[-73.9975892,40.7308071],[-73.9975799,40.7307818],[-73.9975627,40.7307591],[-73.9975386,40.7307403],[-73.9975092,40.7307266],[-73.9974762,40.7307189],[-73.9974381,40.7307177],[-73.9974012,40.7307244],[-73.9973679,40.7307384],[-73.997341,40.7307588],[-73.9973223,40.7307839],[-73.9973133,40.7308119],[-73.9973147,40.7308407],[-73.9973263,40.7308681],[-73.9973473,40.7308922],[-73.9973761,40.730911],[-73.9974105,40.7309232],[-73.997448,40.7309279]]]},"approximate_center_lonlat":[-73.99745591666667,40.7308229]}}};
+    const T = window.THREE;
+    const origin = DATA.origin_lonlat;
+    const projection = d3.geoMercator().center(origin).translate([0,0]).scale(6378137 * Math.cos(origin[1] * Math.PI / 180));
+    const mapped = function(feature) { return feature.geometry.coordinates[0].map(function(p) { return projection(p); }); };
+    const parkPoints = mapped(DATA.features.park);
+    const archPoints = mapped(DATA.features.arch);
+    const fountainPoints = mapped(DATA.features.fountain);
+    const archCenter = projection(DATA.features.arch.approximate_center_lonlat);
+    const A = {x:archCenter[0],z:archCenter[1]};
+    const archAngle = Math.atan2(archPoints[0][1]-archPoints[1][1],archPoints[0][0]-archPoints[1][0]);
+    const c = Math.cos(archAngle), s = Math.sin(archAngle);
+    function localToWorld(x,z) { return {x:A.x+c*x-s*z,z:A.z+s*x+c*z}; }
+    function worldToLocal(p) { const dx=p.x-A.x,dz=p.z-A.z;return {x:c*dx+s*dz,z:-s*dx+c*dz}; }
+    const benchPos = localToWorld(19,20);
+    const plazaPos = localToWorld(-15,12);
+    const home = localToWorld(0,23);
+    const westPier = localToWorld(-7.05,0);
+    const spots = {
+      under:{x:A.x,z:A.z,name:'Beneath the arch',north:true},
+      pier:{x:westPier.x,z:westPier.z,name:'Western arch pier'},
+      fountain:{x:0,z:0,name:'Fountain basin'},
+      bench:{x:benchPos.x,z:benchPos.z,name:'Bench A'},
+      plaza:{x:plazaPos.x,z:plazaPos.z,name:'Open plaza',north:true}
+    };
+    /* Schematic Washington Square Park addressing. x = east; z = south.
+ * Cells use half-open east/north bounds; geometry intersection includes edges.
+ */
+const SpaceMath = (() => {
+  'use strict';
+  const CELL_SIZE = 20;
+  const MIN_X = -180;
+  const MIN_NORTH = -140;
+  const COLS = 17;
+  const ROWS = 15;
+  const EPS = 1e-9;
+
+  function makeCell(colIndex, rowIndex) {
+    if (!Number.isInteger(colIndex) || !Number.isInteger(rowIndex) ||
+        colIndex < 0 || colIndex >= COLS || rowIndex < 0 || rowIndex >= ROWS) return null;
+    const col = String.fromCharCode(65 + colIndex);
+    const row = rowIndex + 1;
+    const minX = MIN_X + colIndex * CELL_SIZE;
+    const minNorth = MIN_NORTH + rowIndex * CELL_SIZE;
+    const maxX = minX + CELL_SIZE;
+    const minZ = -(minNorth + CELL_SIZE);
+    const maxZ = -minNorth;
+    return {
+      id: `WSP-${col}${String(row).padStart(2, '0')}`,
+      col, row, colIndex, rowIndex, minX, maxX, minZ, maxZ,
+      center: { x: (minX + maxX) / 2, z: (minZ + maxZ) / 2 }
+    };
+  }
+
+  function cellAt(point) {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.z)) return null;
+    const north = -point.z;
+    if (point.x < MIN_X || point.x >= MIN_X + COLS * CELL_SIZE ||
+        north < MIN_NORTH || north >= MIN_NORTH + ROWS * CELL_SIZE) return null;
+    return makeCell(Math.floor((point.x - MIN_X) / CELL_SIZE),
+      Math.floor((north - MIN_NORTH) / CELL_SIZE));
+  }
+
+  function cellById(text) {
+    if (typeof text !== 'string') return null;
+    const match = /^(?:WSP-?)?([A-Q])(0?[1-9]|1[0-5])$/.exec(text.replace(/\s+/g, '').toUpperCase());
+    return match ? makeCell(match[1].charCodeAt(0) - 65, Number(match[2]) - 1) : null;
+  }
+
+  function asPoint(point) {
+    if (Array.isArray(point) && Number.isFinite(point[0]) && Number.isFinite(point[1])) {
+      return { x: point[0], z: point[1] };
+    }
+    if (point && Number.isFinite(point.x) && Number.isFinite(point.z)) return point;
+    return null;
+  }
+
+  function validRect(rect) {
+    return rect && ['minX', 'maxX', 'minZ', 'maxZ'].every(key => Number.isFinite(rect[key])) &&
+      rect.minX <= rect.maxX && rect.minZ <= rect.maxZ;
+  }
+
+  function pointInRect(point, rect) {
+    const p = asPoint(point);
+    return !!p && !!validRect(rect) && p.x >= rect.minX - EPS && p.x <= rect.maxX + EPS &&
+      p.z >= rect.minZ - EPS && p.z <= rect.maxZ + EPS;
+  }
+
+  function pointOnSegment(p, a, b) {
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    const scale = Math.max(1, Math.abs(dx), Math.abs(dz));
+    if (Math.abs((p.x - a.x) * dz - (p.z - a.z) * dx) > EPS * scale) return false;
+    return p.x >= Math.min(a.x, b.x) - EPS && p.x <= Math.max(a.x, b.x) + EPS &&
+      p.z >= Math.min(a.z, b.z) - EPS && p.z <= Math.max(a.z, b.z) + EPS;
+  }
+
+  function pointInPolygon(point, points) {
+    const p = asPoint(point);
+    if (!p || !Array.isArray(points) || !points.length) return false;
+    const vertices = points.map(asPoint);
+    if (vertices.some(v => !v)) return false;
+    let inside = false;
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+      const a = vertices[j];
+      const b = vertices[i];
+      if (pointOnSegment(p, a, b)) return true;
+      if ((a.z > p.z) !== (b.z > p.z) &&
+          p.x < (b.x - a.x) * (p.z - a.z) / (b.z - a.z) + a.x) inside = !inside;
+    }
+    return inside;
+  }
+
+  function segmentsIntersect(a, b, c, d) {
+    const cross = (p, q, r) => (q.x - p.x) * (r.z - p.z) - (q.z - p.z) * (r.x - p.x);
+    const abC = cross(a, b, c), abD = cross(a, b, d);
+    const cdA = cross(c, d, a), cdB = cross(c, d, b);
+    if (((abC > 0 && abD < 0) || (abC < 0 && abD > 0)) &&
+        ((cdA > 0 && cdB < 0) || (cdA < 0 && cdB > 0))) return true;
+    return pointOnSegment(a, c, d) || pointOnSegment(b, c, d) ||
+      pointOnSegment(c, a, b) || pointOnSegment(d, a, b);
+  }
+
+  function polygonIntersectsRect(points, rect) {
+    if (!validRect(rect) || !Array.isArray(points) || !points.length) return false;
+    const vertices = points.map(asPoint);
+    if (vertices.some(v => !v)) return false;
+    const corners = [
+      { x: rect.minX, z: rect.minZ }, { x: rect.maxX, z: rect.minZ },
+      { x: rect.maxX, z: rect.maxZ }, { x: rect.minX, z: rect.maxZ }
+    ];
+    if (vertices.some(p => pointInRect(p, rect)) || corners.some(p => pointInPolygon(p, vertices))) return true;
+    for (let i = 0; i < vertices.length; i++) {
+      const a = vertices[i], b = vertices[(i + 1) % vertices.length];
+      for (let j = 0; j < 4; j++) {
+        if (segmentsIntersect(a, b, corners[j], corners[(j + 1) % 4])) return true;
+      }
+    }
+    return false;
+  }
+
+  function circleIntersectsRect(center, radius, rect) {
+    const p = asPoint(center);
+    if (!p || !Number.isFinite(radius) || radius < 0 || !validRect(rect)) return false;
+    const closestX = Math.max(rect.minX, Math.min(rect.maxX, p.x));
+    const closestZ = Math.max(rect.minZ, Math.min(rect.maxZ, p.z));
+    return Math.hypot(p.x - closestX, p.z - closestZ) <= radius + EPS;
+  }
+
+  // Returns [first, second]. At the UI boundary convert north to south z:
+  // {x: pair[0], z: -pair[1]}.
+  function parsePair(text) {
+    if (typeof text !== 'string') return null;
+    const number = '[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+    const match = new RegExp(`^\\s*(${number})\\s*,\\s*(${number})\\s*$`).exec(text);
+    if (!match) return null;
+    const pair = [Number(match[1]), Number(match[2])];
+    return pair.every(Number.isFinite) ? pair : null;
+  }
+
+  return Object.freeze({ CELL_SIZE, MIN_X, MIN_NORTH, COLS, ROWS, cellAt, cellById,
+    pointInRect, pointInPolygon, containsPolygon: pointInPolygon, polygonContains: pointInPolygon,
+    polygonIntersectsRect, circleIntersectsRect, parsePair });
+})();
+
+    const state = {mode:'space',object:'arch',frame:'visitor',heading:Math.round((Math.atan2(A.x-home.x,-(A.z-home.z))*180/Math.PI+360)%360/5)*5,view:'plaza',place:'under',probe:{x:A.x,z:A.z},visitor:{x:home.x,z:home.z},clue:0,system:'cell',origin:'fountain',showGrid:true,showIDs:true,version:2};
+    let placing=false;
+    const scene = new T.Scene();
+    const renderer = new T.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,2));
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type=T.PCFSoftShadowMap;
+    renderer.outputColorSpace=T.SRGBColorSpace;
+    renderer.toneMapping=T.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.15;
+    el('canvas').appendChild(renderer.domElement);
+    const camera = new T.PerspectiveCamera(42,1,.1,1800);
+    const cameraState={yaw:0.10,pitch:.63,distance:133};
+    const focus=new T.Vector3(A.x*.52,1,A.z*.52);
+    const materials=[];
+    const colorProbe=document.createElement('span');
+    colorProbe.hidden=true;root.appendChild(colorProbe);
+    function cssColor(token) {
+      colorProbe.style.color='var('+token+')';
+      const v=getComputedStyle(colorProbe).color;
+      return new T.Color(v);
+    }
+    function material(token,mix) {
+      const m=new T.MeshStandardMaterial({roughness:.88,metalness:0});
+      m.userData={token:token,mix:mix || 0};materials.push(m);return m;
+    }
+    const stone=material('--background',.18),trim=material('--background',.07);
+    const paving=material('--background',.065),grass=material('--green',.45);
+    const foliage=material('--green',.18),trunk=material('--foreground',.6);
+    const benchMat=material('--foreground',.30),basin=material('--background',.28);
+    const visitorMat=material('--viz-series-2',0);
+    const selectedMat=material('--viz-series-1',0);
+    const lit=new T.HemisphereLight(0xffffff,0xffffff,2.4);scene.add(lit);
+    const sun=new T.DirectionalLight(0xffffff,2.7);
+    sun.position.set(-60,110,70);sun.castShadow=true;
+    sun.shadow.mapSize.set(2048,2048);
+    Object.assign(sun.shadow.camera,{left:-180,right:180,top:180,bottom:-180,near:1,far:320});
+    sun.shadow.normalBias=.06;sun.shadow.bias=-.0001;scene.add(sun);
+    function mesh(geo,mat,parent,x,y,z) {
+      const m=new T.Mesh(geo,mat);m.position.set(x||0,y||0,z||0);m.castShadow=true;m.receiveShadow=true;(parent||scene).add(m);return m;
+    }
+    function box(w,h,d,mat,parent,x,y,z) { return mesh(new T.BoxGeometry(w,h,d),mat,parent,x,y,z); }
+    function disk(radius,y,mat,parent,x,z) { return mesh(new T.CylinderGeometry(radius,radius,.2,80),mat,parent,x,y,z); }
+    function shapeOf(points) {
+      const shape=new T.Shape();points.forEach(function(p,i){if(i===0)shape.moveTo(p[0],-p[1]);else shape.lineTo(p[0],-p[1]);});shape.closePath();return shape;
+    }
+    const ground=mesh(new T.ExtrudeGeometry(shapeOf(parkPoints),{depth:.7,bevelEnabled:false}),grass);
+    ground.rotation.x=-Math.PI/2;ground.position.y=-.7;ground.castShadow=false;
+    // The mapped boundary and landmark footprints are real; paths and planting are illustrative.
+    disk(28,.03,paving);
+    const axis=new T.Vector3(A.x,0,A.z).normalize();
+    function walkway(p1,p2,width) {
+      const dx=p2.x-p1.x,dz=p2.z-p1.z;
+      const m=box(width,.12,Math.hypot(dx,dz),paving,scene,(p1.x+p2.x)/2,.04,(p1.z+p2.z)/2);
+      m.rotation.y=Math.atan2(dx,dz);m.castShadow=false;
+    }
+    const northEnd=localToWorld(0,-18);
+    walkway({x:0,z:0},northEnd,25);
+    walkway({x:0,z:0},{x:-92,z:-108},7);
+    walkway({x:0,z:0},{x:98,z:58},7);
+    walkway({x:0,z:0},{x:-108,z:3},7);
+    walkway({x:0,z:0},{x:48,z:97},7);
+    const arch=new T.Group();arch.position.set(A.x,0,A.z);arch.rotation.y=-archAngle;scene.add(arch);
+    const W=19.1,H=22.4,D=6.9,R=4.57,spring=10.5;
+    const outline=new T.Shape();
+    outline.moveTo(-W/2,0);outline.lineTo(-W/2,H);outline.lineTo(W/2,H);
+    outline.lineTo(W/2,0);outline.lineTo(R,0);outline.lineTo(R,spring);
+    outline.absarc(0,spring,R,0,Math.PI,false);
+    outline.lineTo(-R,0);outline.lineTo(-W/2,0);
+    mesh(new T.ExtrudeGeometry(outline,{depth:D,bevelEnabled:false,curveSegments:48}),stone,arch,0,0,-D/2);
+    box(W+.7,.55,D+.6,trim,arch,0,17,0);
+    box(W+1,.7,D+1,trim,arch,0,21.3,0);
+    box(W+.4,.6,D+.4,stone,arch,0,22.4,0);
+    [-1,1].forEach(function(side) {
+      box(4.98,.6,D+.4,trim,arch,side*7.05,.3,0);
+      box(4.98,.5,D+.4,trim,arch,side*7.05,9.4,0);
+      [-1,1].forEach(function(face) {
+        box(.5,8,.28,trim,arch,side*5.1,5.2,face*(D/2+.08));
+        box(.5,8,.28,trim,arch,side*9.0,5.2,face*(D/2+.08));
+        box(2.1,3,.3,trim,arch,side*7.1,13.3,face*(D/2+.12));
+      });
+    });
+    const ringShape=new T.Shape();
+    ringShape.absarc(0,spring,R+.55,0,Math.PI,false);
+    ringShape.lineTo(-R,spring);
+    ringShape.absarc(0,spring,R,Math.PI,0,true);
+    ringShape.closePath();
+    [-1,1].forEach(function(face) {
+      mesh(new T.ExtrudeGeometry(ringShape,{depth:.2,bevelEnabled:false,curveSegments:48}),trim,arch,0,0,face>0?D/2:-D/2-.2);
+    });
+    const fountain=new T.Group();scene.add(fountain);
+    mesh(new T.ExtrudeGeometry(shapeOf(fountainPoints),{depth:.65,bevelEnabled:false}),stone,fountain).rotation.x=-Math.PI/2;
+    disk(10.8,.69,basin,fountain);
+    mesh(new T.CylinderGeometry(1,1.4,3.2,20),stone,fountain,0,2.2,0);
+    mesh(new T.CylinderGeometry(3.2,1.6,.65,40),trim,fountain,0,3.9,0);
+    mesh(new T.CylinderGeometry(.5,.8,2.2,20),stone,fountain,0,5.2,0);
+    mesh(new T.CylinderGeometry(1.75,.7,.45,40),trim,fountain,0,6.4,0);
+    const bench=new T.Group();bench.position.set(benchPos.x,0,benchPos.z);bench.rotation.y=-archAngle;scene.add(bench);
+    box(4.6,.25,1.35,benchMat,bench,0,1.1,0);
+    box(4.6,.85,.18,benchMat,bench,0,1.65,.55);
+    [-1.7,1.7].forEach(function(x){box(.2,1.1,1.1,trunk,bench,x,.55,0);});
+    const visitor=new T.Group();scene.add(visitor);
+    mesh(new T.CapsuleGeometry(.42,.95,6,12),visitorMat,visitor,0,1.0,0);
+    mesh(new T.SphereGeometry(.33,16,12),visitorMat,visitor,0,2.0,0);
+    const visitorBase=mesh(new T.RingGeometry(.72,.85,36),visitorMat,visitor,0,.08,0);visitorBase.rotation.x=-Math.PI/2;visitorBase.material.side=T.DoubleSide;
+    const visitorArrow=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(0,.3,0),7,0xffffff,1.5,.9);visitor.add(visitorArrow);
+    const objects={
+      arch:{name:'Washington Square Arch',group:arch,point:function(){return {x:A.x,z:A.z};},labelY:24,radius:12,description:'Northern entrance, at Fifth Avenue and Washington Square North.'},
+      fountain:{name:'Washington Square Fountain',group:fountain,point:function(){return {x:0,z:0};},labelY:8,radius:13,description:'Central fountain plaza, southwest of the arch.'},
+      bench:{name:'Bench A',group:bench,point:function(){return benchPos;},labelY:3,radius:4,description:'Workshop bench on the eastern side of the plaza.'},
+      visitor:{name:'Visitor A',group:visitor,point:function(){return state.visitor;},labelY:3.5,radius:2,description:'Simulated visitor; move them in Inspect a place or Reference frame.'}
+    };
+    Object.keys(objects).forEach(function(key){objects[key].group.traverse(function(o){o.userData.referent=key;});});
+    // Reproducible decorative trees, kept outside the teaching plaza.
+    let seed=42;
+    function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+    const trees=[];
+    for(let i=0;i<120;i++){
+      const x=-165+rand()*310,z=-145+rand()*278;
+      if(!d3.polygonContains(parkPoints,[x,z])||Math.hypot(x,z)<38)continue;
+      const a=worldToLocal({x:x,z:z});
+      if(Math.abs(a.x)<20&&a.z>-25&&a.z<65)continue;
+      if(Math.hypot(x-benchPos.x,z-benchPos.z)<12)continue;
+      const h=6+rand()*5,rad=3+rand()*2;
+      mesh(new T.CylinderGeometry(.45,.7,h*.72,7),trunk,scene,x,h*.36,z);
+      mesh(new T.IcosahedronGeometry(rad,1),foliage,scene,x,h,z);
+      trees.push({x:x,z:z,radius:.7});
+    }
+    const selection=mesh(new T.RingGeometry(1,1.045,96),selectedMat);selection.rotation.x=-Math.PI/2;selection.material.side=T.DoubleSide;selection.position.y=.14;selection.castShadow=false;
+    const probe=mesh(new T.RingGeometry(.52,.66,48),selectedMat);probe.rotation.x=-Math.PI/2;probe.position.y=.18;probe.castShadow=false;
+    const probeStem=mesh(new T.CylinderGeometry(.06,.06,3,6),selectedMat);probeStem.castShadow=false;
+    const relationship=new T.Line(new T.BufferGeometry(),new T.LineDashedMaterial({color:0xffffff,dashSize:1.3,gapSize:.8}));scene.add(relationship);
+    const candidates=[];
+    ['under','fountain','bench','plaza'].forEach(function(key){
+      const sp=spots[key];const g=new T.Group();g.position.set(sp.x,0,sp.z);scene.add(g);
+      const m=mesh(new T.RingGeometry(2.5,2.8,48),selectedMat,g,0,.2,0);m.rotation.x=-Math.PI/2;m.castShadow=false;
+      candidates.push({key:key,group:g});
+    });
+    const compassGroup=new T.Group();compassGroup.position.set(-32,.12,-28);scene.add(compassGroup);
+    const northArrow=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(),12,0xffffff,2,1.2);compassGroup.add(northArrow);
+    const eastArrow=new T.ArrowHelper(new T.Vector3(1,0,0),new T.Vector3(),9,0xffffff,1.5,.9);compassGroup.add(eastArrow);
+    const labels=[];
+    function label(name,position,kind) {
+      const node=document.createElement('span');node.className='wsp-label text-small';node.textContent=name;el('labels').appendChild(node);labels.push({node:node,position:position,kind:kind});return node;
+    }
+    Object.keys(objects).forEach(function(key){const o=objects[key];label(key==='arch'?'Washington Square Arch':o.name,function(){const p=o.point();return new T.Vector3(p.x,o.labelY,p.z);},key);});
+    label('N',function(){return new T.Vector3(-32,.4,-42);},'compass');
+    label('E',function(){return new T.Vector3(-21,.4,-28);},'compass');
+    label('Fifth Avenue',function(){const p=localToWorld(0,-23);return new T.Vector3(p.x,.6,p.z);},'street');
+    label('Sample',function(){return new T.Vector3(state.probe.x,3.4,state.probe.z);},'sample');
+    candidates.forEach(function(item){label(spots[item.key].name,function(){const p=spots[item.key];return new T.Vector3(p.x,2.5,p.z);},'clue-'+item.key);});
+    const gridMaterial=new T.LineBasicMaterial({transparent:true,opacity:.30});
+    const gridSegments=[];
+    function gridClip(fixed,vertical){
+      const crossings=[];
+      for(let i=0;i<parkPoints.length-1;i++){
+        const p=parkPoints[i],q=parkPoints[i+1],v=vertical?0:1,u=vertical?1:0;
+        if((p[v]<=fixed&&q[v]>fixed)||(q[v]<=fixed&&p[v]>fixed)){
+          const t=(fixed-p[v])/(q[v]-p[v]);crossings.push(p[u]+t*(q[u]-p[u]));
+        }
+      }
+      crossings.sort(function(a,b){return a-b;});
+      for(let i=0;i+1<crossings.length;i+=2){
+        const p=vertical?[fixed,.18,crossings[i]]:[crossings[i],.18,fixed];
+        const q=vertical?[fixed,.18,crossings[i+1]]:[crossings[i+1],.18,fixed];
+        gridSegments.push(new T.Vector3(...p),new T.Vector3(...q));
+      }
+    }
+    for(let x=-180;x<=160;x+=20)gridClip(x,true);
+    for(let z=-160;z<=140;z+=20)gridClip(z,false);
+    const grid=new T.LineSegments(new T.BufferGeometry().setFromPoints(gridSegments),gridMaterial);scene.add(grid);
+    const axes=new T.Group();scene.add(axes);
+    const axisEast=new T.ArrowHelper(new T.Vector3(1,0,0),new T.Vector3(0,.3,0),65,0xffffff,2.3,1.2);
+    const axisNorth=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(0,.3,0),68,0xffffff,2.3,1.2);
+    axes.add(axisEast,axisNorth);
+    const cellFillMat=new T.MeshBasicMaterial({transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide});
+    const cellFill=mesh(new T.PlaneGeometry(20,20),cellFillMat);cellFill.rotation.x=-Math.PI/2;cellFill.castShadow=false;cellFill.receiveShadow=false;cellFill.position.y=.21;
+    const cellEdge=new T.LineLoop(new T.BufferGeometry(),new T.LineBasicMaterial());scene.add(cellEdge);
+    const coordGuide=new T.Line(new T.BufferGeometry(),new T.LineDashedMaterial({dashSize:1,gapSize:.7}));scene.add(coordGuide);
+    const pointCross=new T.LineSegments(new T.BufferGeometry().setFromPoints([new T.Vector3(-1.5,0,0),new T.Vector3(1.5,0,0),new T.Vector3(0,0,-1.5),new T.Vector3(0,0,1.5)]),new T.LineBasicMaterial());scene.add(pointCross);
+    const cells=[];
+    for(let row=1;row<=15;row++)for(let col=0;col<17;col++){
+      const cell=SpaceMath.cellById('WSP-'+String.fromCharCode(65+col)+String(row).padStart(2,'0'));
+      if(!SpaceMath.polygonIntersectsRect(parkPoints,cell))continue;
+      cell.node=label(cell.id.slice(4),function(){return new T.Vector3(cell.center.x,.3,cell.center.z);},'cell');
+      cell.node.classList.add('wsp-grid-label');
+      labels[labels.length-1].cell=cell;
+      cells.push(cell);
+    }
+    const axisXLabel=label('X · east (m)',function(){const o=coordinateOrigin();return new T.Vector3(o.x+67,.4,o.z);},'axis');
+    const axisYLabel=label('Y · north (m)',function(){const o=coordinateOrigin();return new T.Vector3(o.x,.4,o.z-70);},'axis');
+    const originLabel=label('O (0, 0)',function(){const o=coordinateOrigin();return new T.Vector3(o.x,8,o.z);},'axis');
+    const tickLabels=[];
+    [-40,-20,20,40,60].forEach(function(value){
+      const n=label(String(value),function(){const o=coordinateOrigin();return new T.Vector3(o.x+value,.4,o.z);},'tick');
+      tickLabels.push({node:n,axis:'x',value:value});
+    });
+    [-20,20,40,60].forEach(function(value){
+      const n=label(String(value),function(){const o=coordinateOrigin();return new T.Vector3(o.x,.4,o.z-value);},'tick');
+      tickLabels.push({node:n,axis:'y',value:value});
+    });
+    function coordinateOrigin(){return state.system==='local'&&state.origin==='arch'?A:{x:0,z:0};}
+    function activePoint(){return state.mode==='object'||state.mode==='frame'?objects[state.object].point():state.probe;}
+    function signed(value){const n=Math.abs(value)<.05?0:value;return (n>0?'+':'')+n.toFixed(1);}
+    function localCoordinates(p){const o=coordinateOrigin();return {x:p.x-o.x,y:o.z-p.z};}
+    function geographic(p){const ll=projection.invert([p.x,p.z]);return {lat:ll[1],lon:ll[0]};}
+    function gpsText(p){const g=geographic(p);return g.lat.toFixed(5)+'° N, '+Math.abs(g.lon).toFixed(5)+'° W';}
+    function rectPolygon(x1,x2,z1,z2,transform){
+      return [[x1,z1],[x2,z1],[x2,z2],[x1,z2],[x1,z1]].map(function(v){const p=transform(v[0],v[1]);return [p.x,p.z];});
+    }
+    const pierPolygons=[rectPolygon(-9.75,-4.57,-3.65,3.65,localToWorld),rectPolygon(4.57,9.75,-3.65,3.65,localToWorld)];
+    const benchPolygon=rectPolygon(-2.3,2.3,-.7,.7,function(x,z){return {x:benchPos.x+c*x-s*z,z:benchPos.z+s*x+c*z};});
+    function cellOccupants(cell){
+      if(!cell)return [];
+      const result=[];
+      if(pierPolygons.some(function(poly){return SpaceMath.polygonIntersectsRect(poly,cell);}))result.push('arch piers');
+      if(SpaceMath.polygonIntersectsRect(fountainPoints,cell))result.push('fountain');
+      if(SpaceMath.polygonIntersectsRect(benchPolygon,cell))result.push('Bench A');
+      if(SpaceMath.circleIntersectsRect(state.visitor,.42,cell))result.push('Visitor A');
+      const count=trees.filter(function(t){return SpaceMath.circleIntersectsRect(t,t.radius,cell);}).length;
+      if(count)result.push(count+' tree '+(count===1?'trunk':'trunks'));
+      return result;
+    }
+    function queryValue(){
+      const p=state.probe;
+      if(state.system==='cell'){const cell=SpaceMath.cellAt(p);return cell?cell.id:'';}
+      if(state.system==='gps'){const g=geographic(p);return g.lat.toFixed(7)+', '+g.lon.toFixed(7);}
+      const xy=localCoordinates(p);return signed(xy.x)+', '+signed(xy.y);
+    }
+    function performLookup(){
+      const value=el('query').value.trim();
+      let p;
+      if(state.system==='cell'){
+        const cell=SpaceMath.cellById(value);
+        if(!cell||!SpaceMath.polygonIntersectsRect(parkPoints,cell))throw new Error('Enter a workshop cell that intersects the park, for example WSP-K10.');
+        p={x:cell.center.x,z:cell.center.z};
+      }else{
+        const pair=SpaceMath.parsePair(value);
+        if(!pair)throw new Error('Enter two numbers separated by a comma.');
+        if(state.system==='gps'){
+          if(Math.abs(pair[0])>90||Math.abs(pair[1])>180)throw new Error('Use latitude first (−90 to 90), then longitude (−180 to 180).');
+          const world=projection([pair[1],pair[0]]);p={x:world[0],z:world[1]};
+        }else{const o=coordinateOrigin();p={x:o.x+pair[0],z:o.z-pair[1]};}
+        const containing=SpaceMath.cellAt(p);
+        if(!containing||!SpaceMath.polygonIntersectsRect(parkPoints,containing))throw new Error('That point is outside the workshop’s addressed spaces. Choose a cell that intersects the park.');
+      }
+      state.probe=p;state.place='custom';
+      focus.set(p.x,1,p.z);state.view='plaza';
+      el('query-error').hidden=true;
+      update();save();
+    }
+    const compassNames=['north','northeast','east','southeast','south','southwest','west','northwest'];
+    const relativeNames=['ahead','ahead-right','right','behind-right','behind','behind-left','left','ahead-left'];
+    function sector(angle){return Math.floor((((angle%360)+360+22.5)%360)/45);}
+    function relation(target,observer,heading){
+      const dx=target.x-observer.x,dz=target.z-observer.z,dist=Math.hypot(dx,dz);
+      const t=heading*Math.PI/180;
+      const forward=dx*Math.sin(t)-dz*Math.cos(t),right=dx*Math.cos(t)+dz*Math.sin(t);
+      return {distance:dist,compass:compassNames[sector(Math.atan2(dx,-dz)*180/Math.PI)],relative:dist<.5?'at the same position':relativeNames[sector(Math.atan2(right,forward)*180/Math.PI)],forward:forward,right:right};
+    }
+    function circleRect(p,r,x1,x2,z1,z2){
+      const x=Math.max(x1,Math.min(x2,p.x)),z=Math.max(z1,Math.min(z2,p.z));return (p.x-x)*(p.x-x)+(p.z-z)*(p.z-z)<=r*r;
+    }
+    function circlePolygon(p,r,points){
+      if(d3.polygonContains(points,[p.x,p.z]))return true;
+      for(let i=0;i<points.length-1;i++){
+        const a=points[i],b=points[i+1],dx=b[0]-a[0],dz=b[1]-a[1];
+        const length2=dx*dx+dz*dz;
+        const t=length2?Math.max(0,Math.min(1,((p.x-a[0])*dx+(p.z-a[1])*dz)/length2)):0;
+        if(Math.hypot(p.x-a[0]-t*dx,p.z-a[1]-t*dz)<=r)return true;
+      }
+      return false;
+    }
+    function staticOccupants(p,r){
+      const occupants=[],a=worldToLocal(p);
+      if(circleRect(a,r,-9.75,-4.57,-3.65,3.65)||circleRect(a,r,4.57,9.75,-3.65,3.65))occupants.push('Arch pier');
+      if(circlePolygon(p,r,fountainPoints))occupants.push('Fountain basin');
+      const bp={x:p.x-benchPos.x,z:p.z-benchPos.z};
+      if(circleRect({x:c*bp.x+s*bp.z,z:-s*bp.x+c*bp.z},r,-2.3,2.3,-.7,.7))occupants.push('Bench A');
+      if(trees.some(function(t){return Math.hypot(p.x-t.x,p.z-t.z)<=r+t.radius;}))occupants.push('Tree trunk');
+      return occupants;
+    }
+    function occupancy(p){
+      const list=staticOccupants(p,.6);
+      if(Math.hypot(p.x-state.visitor.x,p.z-state.visitor.z)<=1.02)list.push('Visitor A');
+      return list;
+    }
+    function canStand(p){return d3.polygonContains(parkPoints,[p.x,p.z])&&staticOccupants(p,.45).length===0;}
+    function candidateKeys(){
+      return ['under','fountain','bench','plaza'].filter(function(key){return state.clue===0||(state.clue===1?Math.hypot(spots[key].x-A.x,spots[key].z-A.z)<=20:key==='under');});
+    }
+    function coord(p){const xy=localCoordinates(p);return 'X '+signed(xy.x)+' m, Y '+signed(xy.y)+' m';}
+    function answer(){
+      const obj=objects[state.object],p=obj.point();
+      if(state.mode==='space'){
+        const cell=SpaceMath.cellAt(state.probe),cellList=cellOccupants(cell);
+        const exact=staticOccupants(state.probe,0);
+        if(Math.hypot(state.probe.x-state.visitor.x,state.probe.z-state.visitor.z)<=.42)exact.push('Visitor A');
+        const a=worldToLocal(state.probe),overhead=Math.abs(a.x)<4.57&&Math.abs(a.z)<3.45?' (arch overhead)':'';
+        const pointText=d3.polygonContains(parkPoints,[state.probe.x,state.probe.z])?(exact.length?exact.join(' + '):'clear ground'+overhead):'outside the park boundary';
+        return (cell?cell.id:'No cell')+' contains '+(cellList.length?cellList.join(', '):'no modeled occupants')+' · At point P: '+pointText+'.';
+      }
+      if(state.mode==='object'){
+        if(state.object==='visitor'){const r=relation(p,{x:0,z:0},0);return 'Visitor A · '+r.distance.toFixed(1)+' m '+r.compass+' of the fountain (simulated).';}
+        return obj.name+' · '+obj.description;
+      }
+      if(state.mode==='occupancy'){
+        const list=occupancy(state.probe),a=worldToLocal(state.probe);
+        const overhead=Math.abs(a.x)<4.57&&Math.abs(a.z)<3.45?' · arch overhead':'';
+        return (list.length?list.join(' + '):'No ground-level occupant')+overhead+' · within the 0.6 m sample, in this simulation.';
+      }
+      if(state.mode==='frame'){
+        if(state.frame==='coordinates')return obj.name+' ground anchor · '+coord(p)+' · origin: '+(state.system==='local'&&state.origin==='arch'?'arch midpoint':'fountain')+'.';
+        const r=relation(p,state.visitor,state.heading);
+        if(r.distance<.5)return obj.name+' is at Visitor A’s position.';
+        const words={ahead:'in front of', 'ahead-right':'in front and to the right of', right:'to the right of', 'behind-right':'behind and to the right of', behind:'behind', 'behind-left':'behind and to the left of', left:'to the left of', 'ahead-left':'in front and to the left of'};
+        return obj.name+' is '+(state.frame==='visitor'?words[r.relative]+' Visitor A':r.compass+' of Visitor A')+' · '+r.distance.toFixed(1)+' m in the model.';
+      }
+      const keys=candidateKeys();
+      return keys.length===1?'One match · meet beneath Washington Square Arch at the park’s northern entrance.':keys.length+' marked candidates · '+keys.map(function(k){return spots[k].name;}).join(' / ');
+    }
+    function save(){
+      if(window.openai&&typeof window.openai.setWidgetState==='function'){
+        Promise.resolve(window.openai.setWidgetState({modelContent:{mode:state.mode,referent:objects[state.object].name,answer:answer(),heading:state.heading,frame:state.frame,coordinateSystem:state.system,cell:SpaceMath.cellAt(activePoint())?.id,position:localCoordinates(activePoint()),origin:state.origin},privateContent:{state:JSON.parse(JSON.stringify(state)),camera:cameraState,focus:{x:focus.x,z:focus.z}}})).catch(function(){});
+      }
+    }
+    function restore(snapshot){
+      const saved=snapshot&&snapshot.privateContent&&snapshot.privateContent.state;
+      if(!saved||saved.version!==2)return;
+      ['mode','object','frame','view','place','system','origin'].forEach(function(k){
+        const allowed={mode:['space','object','occupancy','frame','clues'],object:Object.keys(objects),frame:['visitor','compass','coordinates'],view:['plaza','park','map','eye'],place:Object.keys(spots).concat('custom'),system:['cell','local','gps'],origin:['fountain','arch']};
+        if(allowed[k].includes(saved[k]))state[k]=saved[k];
+      });
+      if(Number.isFinite(saved.heading))state.heading=((saved.heading%360)+360)%360;
+      if(Number.isInteger(saved.clue)&&saved.clue>=0&&saved.clue<=2)state.clue=saved.clue;
+      ['visitor','probe'].forEach(function(k){const p=saved[k];if(p&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.abs(p.x)<300&&Math.abs(p.z)<300)state[k]={x:p.x,z:p.z};});
+      ['showGrid','showIDs'].forEach(function(k){if(typeof saved[k]==='boolean')state[k]=saved[k];});
+      const savedFocus=snapshot.privateContent.focus;
+      if(savedFocus&&Number.isFinite(savedFocus.x)&&Number.isFinite(savedFocus.z)&&Math.abs(savedFocus.x)<300&&Math.abs(savedFocus.z)<300)focus.set(savedFocus.x,1,savedFocus.z);
+      const savedCamera=snapshot.privateContent.camera;
+      if(savedCamera){
+        if(Number.isFinite(savedCamera.yaw))cameraState.yaw=savedCamera.yaw%(Math.PI*2);
+        if(Number.isFinite(savedCamera.pitch))cameraState.pitch=Math.max(.22,Math.min(1.45,savedCamera.pitch));
+        if(Number.isFinite(savedCamera.distance))cameraState.distance=Math.max(60,Math.min(260,savedCamera.distance));
+      }
+    }
+    function updateCamera(){
+      const w=el('stage').clientWidth,h=el('stage').clientHeight;
+      const narrow=Math.max(1,.95/(w/h));
+      camera.up.set(0,1,0);
+      if(state.view==='eye'){
+        const t=state.heading*Math.PI/180;camera.position.set(state.visitor.x,1.75,state.visitor.z);
+        camera.lookAt(state.visitor.x+Math.sin(t)*30,3,state.visitor.z-Math.cos(t)*30);camera.fov=66;
+      }else if(state.view==='map'){
+        camera.position.set(focus.x,145*narrow,focus.z+.01);camera.up.set(0,0,-1);camera.lookAt(focus);camera.fov=42;
+      }else{
+        const distance=(state.view==='park'?400:cameraState.distance)*narrow;
+        const target=state.view==='park'?new T.Vector3(-10,0,-5):focus;
+        camera.up.set(0,1,0);
+        camera.position.set(target.x+Math.sin(cameraState.yaw)*Math.cos(cameraState.pitch)*distance,target.y+Math.sin(cameraState.pitch)*distance,target.z+Math.cos(cameraState.yaw)*Math.cos(cameraState.pitch)*distance);
+        camera.lookAt(target);camera.fov=42;
+      }
+      camera.aspect=w/h;camera.updateProjectionMatrix();camera.updateMatrixWorld();
+    }
+    function drawLabels(){
+      const w=el('stage').clientWidth,h=el('stage').clientHeight,occupied=[];
+      const priority=function(l){return l.kind==='cell'?3:l.kind==='tick'?2:l.kind==='axis'?1:0;};
+      labels.slice().sort(function(a,b){return priority(a)-priority(b);}).forEach(function(l){
+        let show=true;
+        if(l.kind==='sample')show=state.mode==='occupancy';
+        if(l.kind==='axis'||l.kind==='tick')show=state.showGrid&&state.mode!=='clues'&&state.view!=='eye';
+        if(l.kind==='compass')show=!state.showGrid;
+        if(l.kind==='cell'){
+          const current=SpaceMath.cellAt(activePoint());
+          const near=Math.hypot(l.cell.center.x-focus.x,l.cell.center.z-focus.z)<85;
+          show=state.showGrid&&state.showIDs&&state.mode!=='clues'&&state.view!=='eye'&&d3.polygonContains(parkPoints,[l.cell.center.x,l.cell.center.z])&&(state.view==='park'?l.cell.row%2===0&&l.cell.colIndex%2===0:near);
+          if(w<500&&current&&l.cell.id!==current.id)show=show&&l.cell.row%2===0&&l.cell.colIndex%2===0;
+          l.node.classList.toggle('selected',!!current&&current.id===l.cell.id);
+        }
+        if(l.kind.indexOf('clue-')===0)show=state.mode==='clues'&&candidateKeys().includes(l.kind.slice(5));
+        if(objects[l.kind]&&state.mode==='clues')show=false;
+        if(l.kind==='visitor'&&state.view==='eye')show=false;
+        const v=l.position().project(camera);
+        const x=(v.x+1)*w/2,y=(-v.y+1)*h/2;
+        if(v.z>1||v.z< -1||x<15||x>w-15||y<60||y>h-40)show=false;
+        l.node.hidden=!show;
+        if(!show)return;
+        const nw=l.node.offsetWidth,nh=l.node.offsetHeight;
+        const left=Math.min(w-nw/2-6,Math.max(nw/2+6,x));
+        let top=y;
+        let fits=false;
+        for(let attempt=0;attempt<4;attempt++){
+          const rect={x:left-nw/2,y:top-nh,w:nw,h:nh};
+          if(!occupied.some(function(b){return rect.x<b.x+b.w+3&&rect.x+rect.w+3>b.x&&rect.y<b.y+b.h+3&&rect.y+rect.h+3>b.y;})){occupied.push(rect);fits=true;break;}
+          if(l.kind==='cell'||l.kind==='tick')break;
+          top+=nh+4;
+        }
+        if(!fits||top>h-30){l.node.hidden=true;return;}
+        l.node.style.left=left+'px';l.node.style.top=top+'px';
+      });
+    }
+    let scheduled=false;
+    function render(){scheduled=false;if(!root.isConnected)return;updateCamera();renderer.render(scene,camera);drawLabels();}
+    function requestRender(){if(!scheduled){scheduled=true;requestAnimationFrame(render);}}
+    function theme(){
+      const bg=cssColor('--background'),fg=cssColor('--foreground');
+      const dark=bg.getHSL({}).l<.5,light=dark?fg:bg;
+      materials.forEach(function(m){
+        m.color.copy(cssColor(m.userData.token));
+        let blend=m.userData.mix;
+        if(dark&&m.userData.token==='--background')blend=Math.min(.6,blend+.18);
+        if(blend)m.color.lerp(m.userData.token==='--background'?fg:bg,blend);
+      });
+      lit.color.copy(light);lit.groundColor.copy(bg.clone().lerp(fg,dark?.35:.12));lit.intensity=1.8;
+      sun.color.copy(light);sun.intensity=2.0;
+      const active=cssColor('--viz-series-1'),neutral=fg.clone().lerp(bg,.35);
+      relationship.material.color.copy(active);visitorArrow.setColor(cssColor('--viz-series-2'));northArrow.setColor(neutral);eastArrow.setColor(neutral);
+      gridMaterial.color.copy(fg);axisEast.setColor(neutral);axisNorth.setColor(neutral);
+      cellFillMat.color.copy(active);cellEdge.material.color.copy(active);coordGuide.material.color.copy(active);pointCross.material.color.copy(active);
+      renderer.setClearColor(bg,1);requestRender();
+    }
+    function update(){
+      root.querySelectorAll('[data-mode]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.mode===state.mode));});
+      el('space-controls').hidden=state.mode!=='space';
+      el('object-controls').hidden=!(state.mode==='object'||state.mode==='frame');
+      el('frame-label').hidden=state.mode!=='frame';
+      el('occupancy-controls').hidden=state.mode!=='occupancy';
+      el('heading-controls').hidden=state.mode!=='frame';
+      el('clue-controls').hidden=state.mode!=='clues';
+      ['object','frame','heading','view','place','clue'].forEach(function(k){el(k).value=state[k];});
+      el('system').value=state.system;el('origin').value=state.origin;
+      el('origin-label').hidden=state.system!=='local';
+      el('grid-toggle').checked=state.showGrid;el('ids-toggle').checked=state.showIDs;
+      el('query').value=queryValue();
+      el('query-label').textContent={cell:'Space address',local:'X, Y in metres',gps:'Latitude, longitude · degrees'}[state.system];
+      el('query').placeholder={cell:'WSP-K10',local:'29.8, 45.8',gps:'40.7312347, -73.9971025'}[state.system];
+      el('system-note').textContent={cell:'WSP / column A–Q / row 01–15 · rows increase north',local:'X east · Y north · ground level · negative values west / south',gps:'Latitude first, longitude second · north/east positive'}[state.system];
+      const ap=activePoint(),cell=SpaceMath.cellAt(ap),originPoint=coordinateOrigin();
+      const readout=(cell?'NYC / Washington Square Park / '+cell.id:'Outside the address grid')+' · '+coord(ap)+' · '+gpsText(ap);
+      el('location-readout').textContent=readout;
+      el('location-readout').hidden=state.mode==='clues';
+      grid.visible=state.showGrid&&state.mode!=='clues';
+      axes.visible=state.showGrid&&state.mode!=='clues'&&state.view!=='eye';axes.position.set(originPoint.x,0,originPoint.z);
+      compassGroup.visible=!state.showGrid;
+      cellFill.visible=cellEdge.visible=!!cell&&state.mode!=='clues';
+      if(cell){
+        cellFill.position.set(cell.center.x,.21,cell.center.z);
+        cellEdge.geometry.dispose();
+        cellEdge.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(cell.minX,.25,cell.minZ),new T.Vector3(cell.maxX,.25,cell.minZ),new T.Vector3(cell.maxX,.25,cell.maxZ),new T.Vector3(cell.minX,.25,cell.maxZ)]);
+      }
+      coordGuide.visible=state.mode==='space'&&state.system==='local';
+      coordGuide.geometry.dispose();coordGuide.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(originPoint.x,.35,originPoint.z),new T.Vector3(ap.x,.35,originPoint.z),new T.Vector3(ap.x,.35,ap.z)]);coordGuide.computeLineDistances();
+      pointCross.visible=state.mode==='space';pointCross.position.set(ap.x,.3,ap.z);
+      axisXLabel.textContent=state.system==='gps'?'Longitude → east':'X → east (m)';
+      axisYLabel.textContent=state.system==='gps'?'Latitude → north':'Y → north (m)';
+      originLabel.textContent=state.system==='gps'?'Fountain · reference':'O (0, 0)';
+      tickLabels.forEach(function(t){
+        if(state.system==='gps'){
+          const p=t.axis==='x'?{x:originPoint.x+t.value,z:originPoint.z}:{x:originPoint.x,z:originPoint.z-t.value};
+          const g=geographic(p);t.node.textContent=t.axis==='x'?Math.abs(g.lon).toFixed(4)+'° W':g.lat.toFixed(4)+'° N';
+        }else t.node.textContent=String(t.value);
+      });
+      el('heading-value').textContent=state.heading+'° · '+compassNames[sector(state.heading)].toUpperCase();
+      el('candidate-count').textContent=candidateKeys().length+' marked '+(candidateKeys().length===1?'candidate':'candidates');
+      el('bring').disabled=!canStand(state.probe);
+      el('away').disabled=Math.hypot(state.visitor.x-home.x,state.visitor.z-home.z)<.1;
+      el('move').setAttribute('aria-pressed',String(placing));
+      el('hint').textContent=placing?'Click clear ground to place Visitor A':state.mode==='space'?'Click a space · drag to orbit · scroll to zoom':state.mode==='occupancy'?'Click ground to inspect · drag to orbit':state.mode==='clues'?'Choose a clue · matching places are marked':'Drag to orbit · scroll to zoom · click an object';
+      el('camera-note').textContent=state.view==='eye'?'Camera follows Visitor A':'Camera orbit does not turn the visitor';
+      visitor.position.set(state.visitor.x,0,state.visitor.z);visitor.visible=state.view!=='eye';
+      visitor.rotation.y=-state.heading*Math.PI/180;
+      const o=objects[state.object],p=o.point();
+      selection.position.set(p.x,.14,p.z);selection.scale.setScalar(o.radius);
+      selection.visible=state.mode==='object'||state.mode==='frame';
+      probe.position.set(state.probe.x,.18,state.probe.z);
+      probeStem.position.set(state.probe.x,1.7,state.probe.z);
+      probe.visible=probeStem.visible=state.mode==='occupancy'||state.mode==='space';
+      candidates.forEach(function(item){item.group.visible=state.mode==='clues'&&candidateKeys().includes(item.key);});
+      relationship.visible=state.mode==='frame'&&state.object!=='visitor';
+      relationship.geometry.dispose();
+      relationship.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(state.visitor.x,.25,state.visitor.z),new T.Vector3(p.x,.25,p.z)]);
+      relationship.computeLineDistances();
+      el('answer').textContent=answer();requestRender();
+    }
+    function change(fn){fn();update();save();}
+    function handleLookup(){try{performLookup();}catch(error){el('query-error').textContent=error.message;el('query-error').hidden=false;}}
+    el('locate').addEventListener('click',handleLookup);
+    el('query').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();handleLookup();}});
+    ['system','origin'].forEach(function(k){el(k).addEventListener('change',function(){change(function(){state[k]=el(k).value;el('query-error').hidden=true;});});});
+    el('grid-toggle').addEventListener('change',function(){change(function(){state.showGrid=el('grid-toggle').checked;});});
+    el('ids-toggle').addEventListener('change',function(){change(function(){state.showIDs=el('ids-toggle').checked;});});
+    root.querySelectorAll('[data-mode]').forEach(function(b){b.addEventListener('click',function(){change(function(){state.mode=b.dataset.mode;placing=false;});});});
+    ['object','frame','view'].forEach(function(key){el(key).addEventListener('change',function(){change(function(){state[key]=el(key).value;});});});
+    el('place').addEventListener('change',function(){change(function(){state.place=el('place').value;const p=spots[state.place];state.probe={x:p.x,z:p.z};});});
+    el('clue').addEventListener('change',function(){change(function(){state.clue=Number(el('clue').value);});});
+    el('heading').addEventListener('input',function(){state.heading=Number(el('heading').value);update();});
+    el('heading').addEventListener('change',save);
+    el('turn').addEventListener('click',function(){change(function(){state.heading=(state.heading+180)%360;});});
+    el('move').addEventListener('click',function(){placing=!placing;update();});
+    el('bring').addEventListener('click',function(){if(canStand(state.probe))change(function(){state.visitor={x:state.probe.x,z:state.probe.z};});});
+    el('away').addEventListener('click',function(){change(function(){state.visitor={x:home.x,z:home.z};});});
+    const raycaster=new T.Raycaster(),pointer=new T.Vector2(),groundPlane=new T.Plane(new T.Vector3(0,1,0),0);
+    let down=null,moved=false;
+    const canvas=renderer.domElement;
+    canvas.addEventListener('pointerdown',function(e){down={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY};moved=false;canvas.setPointerCapture(e.pointerId);});
+    canvas.addEventListener('pointermove',function(e){
+      if(!down)return;
+      if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>4)moved=true;
+      if(moved&&state.view!=='eye'&&state.view!=='map'){
+        cameraState.yaw-=(e.clientX-down.lastX)*.008;
+        cameraState.pitch=Math.max(.22,Math.min(1.45,cameraState.pitch+(e.clientY-down.lastY)*.006));
+        requestRender();
+      }
+      down.lastX=e.clientX;down.lastY=e.clientY;
+    });
+    canvas.addEventListener('pointerup',function(e){
+      if(!down)return;
+      down=null;if(moved){save();return;}
+      const rect=canvas.getBoundingClientRect();
+      pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
+      raycaster.setFromCamera(pointer,camera);
+      const hit=new T.Vector3();
+      if(placing||state.mode==='occupancy'||state.mode==='space'){
+        if(!raycaster.ray.intersectPlane(groundPlane,hit))return;
+        const p={x:hit.x,z:hit.z};
+        if(!d3.polygonContains(parkPoints,[p.x,p.z]))return;
+        if(placing){
+          if(!canStand(p)){el('answer').textContent='Choose clear ground inside the park.';return;}
+          change(function(){state.visitor=p;placing=false;});
+        }else change(function(){state.probe=p;state.place='custom';el('query-error').hidden=true;});
+      }else if(state.mode!=='clues'){
+        const hits=raycaster.intersectObjects(Object.values(objects).map(function(o){return o.group;}),true);
+        if(hits.length)change(function(){state.object=hits[0].object.userData.referent;});
+      }
+    });
+    canvas.addEventListener('pointercancel',function(){down=null;});
+    let zoomSaveTimer;
+    canvas.addEventListener('wheel',function(e){
+      if(state.view==='plaza'){e.preventDefault();cameraState.distance=Math.max(60,Math.min(260,cameraState.distance*Math.exp(e.deltaY*.001)));requestRender();clearTimeout(zoomSaveTimer);zoomSaveTimer=setTimeout(save,250);}
+    },{passive:false});
+    const resize=new ResizeObserver(function(){renderer.setSize(el('stage').clientWidth,el('stage').clientHeight);requestRender();});resize.observe(el('stage'));
+    const mutation=new MutationObserver(theme);mutation.observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme','data-color-scheme']});
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',theme);
+    window.addEventListener('openai:set_globals',function(e){if(e.detail&&e.detail.globals&&e.detail.globals.widgetState){restore(e.detail.globals.widgetState);update();}});
+    restore(window.openai&&window.openai.widgetState);
+    theme();update();loading.hidden=true;
+    // Read-only diagnostic access for targeted verification.
+    root.wsp={state:state,relation:relation,occupancy:occupancy,canStand:canStand,spots:spots,worldToLocal:worldToLocal,localToWorld:localToWorld,candidateKeys:candidateKeys,renderer:renderer,SpaceMath:SpaceMath,cellOccupants:cellOccupants,geographic:geographic,localCoordinates:localCoordinates,projection:projection,cells:cells,project:function(p){updateCamera();const v=new T.Vector3(p.x,p.y||0,p.z).project(camera);return {x:(v.x+1)*el('stage').clientWidth/2,y:(1-v.y)*el('stage').clientHeight/2};}};
+  } catch(error) {
+    loading.textContent=error.message;
+    loading.setAttribute('role','alert');
+  }
+})();
+</script>

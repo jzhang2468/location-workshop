@@ -1,0 +1,2798 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Location Workshop</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Location Workshop" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Location Workshop&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 10px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover,
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;div id=&quot;wsp-workshop&quot;&gt;
+  &lt;div class=&quot;wsp-heading&quot;&gt;
+    &lt;h2&gt;A system of location&lt;/h2&gt;
+    &lt;span class=&quot;text-small&quot;&gt;Washington Square Park · spaces + occupants&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;viz-row&quot; id=&quot;wsp-modes&quot; aria-label=&quot;Workshop question&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-mode=&quot;space&quot; aria-pressed=&quot;true&quot;&gt;Coordinate system&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-mode=&quot;object&quot; aria-pressed=&quot;false&quot;&gt;Object → location&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-mode=&quot;occupancy&quot; aria-pressed=&quot;false&quot;&gt;Location → occupant&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-mode=&quot;frame&quot; aria-pressed=&quot;false&quot;&gt;Reference frame&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-mode=&quot;clues&quot; aria-pressed=&quot;false&quot;&gt;Infer a location&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;wsp-control-area&quot;&gt;
+    &lt;div id=&quot;wsp-space-controls&quot;&gt;
+      &lt;div class=&quot;wsp-coordinate-fields&quot;&gt;
+        &lt;label class=&quot;form-label&quot;&gt;Locate by
+          &lt;select class=&quot;form-select&quot; id=&quot;wsp-system&quot;&gt;
+            &lt;option value=&quot;cell&quot;&gt;Space ID&lt;/option&gt;
+            &lt;option value=&quot;local&quot;&gt;X east, Y north · m&lt;/option&gt;
+            &lt;option value=&quot;gps&quot;&gt;Latitude, longitude&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/label&gt;
+        &lt;label class=&quot;form-label&quot;&gt;&lt;span id=&quot;wsp-query-label&quot;&gt;Space address&lt;/span&gt;
+          &lt;input class=&quot;form-control tabular-nums&quot; id=&quot;wsp-query&quot; value=&quot;WSP-K10&quot; autocomplete=&quot;off&quot; spellcheck=&quot;false&quot; aria-describedby=&quot;wsp-system-note&quot;&gt;
+        &lt;/label&gt;
+        &lt;div class=&quot;wsp-locate&quot;&gt;&lt;button class=&quot;btn btn-primary&quot; type=&quot;button&quot; id=&quot;wsp-locate&quot;&gt;Locate&lt;/button&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;viz-row wsp-space-options&quot;&gt;
+        &lt;label class=&quot;form-label&quot; id=&quot;wsp-origin-label&quot; hidden&gt;Origin
+          &lt;select class=&quot;form-select&quot; id=&quot;wsp-origin&quot;&gt;
+            &lt;option value=&quot;fountain&quot;&gt;Fountain · (0, 0)&lt;/option&gt;
+            &lt;option value=&quot;arch&quot;&gt;Arch midpoint · (0, 0)&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/label&gt;
+        &lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;wsp-grid-toggle&quot; checked&gt;&lt;span class=&quot;form-check-label&quot;&gt;20 m grid&lt;/span&gt;&lt;/label&gt;
+        &lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;wsp-ids-toggle&quot; checked&gt;&lt;span class=&quot;form-check-label&quot;&gt;Space IDs&lt;/span&gt;&lt;/label&gt;
+        &lt;span class=&quot;text-small&quot; id=&quot;wsp-system-note&quot;&gt;Columns west → east · rows south → north&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;text-destructive text-small&quot; id=&quot;wsp-query-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;viz-controls&quot; id=&quot;wsp-object-controls&quot;&gt;
+      &lt;label class=&quot;form-label&quot;&gt;Referent
+        &lt;select class=&quot;form-select&quot; id=&quot;wsp-object&quot;&gt;
+          &lt;option value=&quot;arch&quot;&gt;Washington Square Arch&lt;/option&gt;
+          &lt;option value=&quot;fountain&quot;&gt;Washington Square Fountain&lt;/option&gt;
+          &lt;option value=&quot;bench&quot;&gt;Bench A · workshop prop&lt;/option&gt;
+          &lt;option value=&quot;visitor&quot;&gt;Visitor A · simulated&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;label class=&quot;form-label&quot; id=&quot;wsp-frame-label&quot; hidden&gt;Reference frame
+        &lt;select class=&quot;form-select&quot; id=&quot;wsp-frame&quot;&gt;
+          &lt;option value=&quot;visitor&quot;&gt;Visitor A&#x27;s viewpoint&lt;/option&gt;
+          &lt;option value=&quot;compass&quot;&gt;Compass directions&lt;/option&gt;
+          &lt;option value=&quot;coordinates&quot;&gt;Local coordinates&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;viz-controls&quot; id=&quot;wsp-occupancy-controls&quot; hidden&gt;
+      &lt;label class=&quot;form-label&quot;&gt;Ground location · 0.6 m sample
+        &lt;select class=&quot;form-select&quot; id=&quot;wsp-place&quot;&gt;
+          &lt;option value=&quot;under&quot;&gt;Beneath the arch&lt;/option&gt;
+          &lt;option value=&quot;pier&quot;&gt;Western arch pier&lt;/option&gt;
+          &lt;option value=&quot;fountain&quot;&gt;Fountain basin&lt;/option&gt;
+          &lt;option value=&quot;bench&quot;&gt;Bench A&lt;/option&gt;
+          &lt;option value=&quot;plaza&quot;&gt;Open plaza&lt;/option&gt;
+          &lt;option value=&quot;custom&quot; disabled&gt;Selected ground point&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;div class=&quot;viz-row&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;wsp-bring&quot;&gt;Move visitor here&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;wsp-away&quot;&gt;Move visitor away&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;wsp-heading-controls&quot; hidden&gt;
+      &lt;div class=&quot;viz-row&quot;&gt;
+        &lt;label for=&quot;wsp-heading&quot;&gt;Visitor heading &lt;span class=&quot;tabular-nums&quot; id=&quot;wsp-heading-value&quot;&gt;0° · N&lt;/span&gt;&lt;/label&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;wsp-turn&quot;&gt;Turn 180°&lt;/button&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;wsp-move&quot; aria-pressed=&quot;false&quot;&gt;Place visitor&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;355&quot; step=&quot;5&quot; value=&quot;0&quot; id=&quot;wsp-heading&quot; aria-label=&quot;Visitor heading clockwise from north&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;viz-row&quot; id=&quot;wsp-clue-controls&quot; hidden&gt;
+      &lt;label class=&quot;form-label&quot;&gt;Location description
+        &lt;select class=&quot;form-select&quot; id=&quot;wsp-clue&quot;&gt;
+          &lt;option value=&quot;0&quot;&gt;1 · Somewhere in this park&lt;/option&gt;
+          &lt;option value=&quot;1&quot;&gt;2 · Within 20 m of the arch&lt;/option&gt;
+          &lt;option value=&quot;2&quot;&gt;3 · Beneath the marble arch&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/label&gt;
+      &lt;span id=&quot;wsp-candidate-count&quot; class=&quot;tabular-nums&quot;&gt;4 marked candidates&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;wsp-location-readout text-small tabular-nums&quot; id=&quot;wsp-location-readout&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;wsp-stage&quot; id=&quot;wsp-stage&quot;&gt;
+    &lt;div id=&quot;wsp-canvas&quot; role=&quot;img&quot; aria-label=&quot;Interactive three-dimensional Washington Square Park model. The arch is northeast of the fountain. Controls above offer equivalent keyboard interaction.&quot;&gt;&lt;/div&gt;
+    &lt;div id=&quot;wsp-labels&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;wsp-stage-top&quot;&gt;
+      &lt;span class=&quot;text-small&quot; id=&quot;wsp-hint&quot;&gt;Drag to orbit · scroll to zoom · click an object&lt;/span&gt;
+      &lt;label class=&quot;sr-only&quot; for=&quot;wsp-view&quot;&gt;Camera view&lt;/label&gt;
+      &lt;div class=&quot;wsp-view-control&quot;&gt;&lt;select class=&quot;form-select&quot; id=&quot;wsp-view&quot; aria-label=&quot;Camera view&quot;&gt;
+        &lt;option value=&quot;plaza&quot;&gt;Plaza view&lt;/option&gt;
+        &lt;option value=&quot;map&quot;&gt;North-up view&lt;/option&gt;
+        &lt;option value=&quot;park&quot;&gt;Whole park&lt;/option&gt;
+        &lt;option value=&quot;eye&quot;&gt;Visitor&#x27;s eye&lt;/option&gt;
+      &lt;/select&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;wsp-stage-bottom text-small&quot;&gt;&lt;span id=&quot;wsp-stage-legend&quot;&gt;20 m cells · X east / Y north · ground level&lt;/span&gt;&lt;span id=&quot;wsp-camera-note&quot;&gt;Camera orbit does not turn the visitor&lt;/span&gt;&lt;/div&gt;
+    &lt;div id=&quot;wsp-loading&quot; role=&quot;status&quot;&gt;Loading the park…&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;wsp-answer&quot; role=&quot;status&quot; aria-live=&quot;polite&quot; id=&quot;wsp-answer&quot;&gt;Washington Square Arch · northern entrance at the foot of Fifth Avenue.&lt;/div&gt;
+  &lt;div class=&quot;wsp-footer text-small&quot;&gt;
+    &lt;span&gt;Workshop cells, not property parcels · modeled occupants · approximate GPS.&lt;/span&gt;
+    &lt;a href=&quot;https://www.openstreetmap.org/copyright&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;© OpenStreetMap contributors&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  #wsp-workshop { color:var(--foreground); }
+  #wsp-workshop [hidden] { display:none !important; }
+  #wsp-workshop .wsp-heading { display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px; }
+  #wsp-workshop .wsp-heading h2 { margin:0; }
+  #wsp-workshop .wsp-control-area { margin:12px 0; }
+  #wsp-workshop .wsp-coordinate-fields { display:grid;grid-template-columns:minmax(150px,1fr) minmax(160px,1.3fr) auto;gap:12px;align-items:end; }
+  #wsp-workshop .wsp-locate { padding-bottom:1px; }
+  #wsp-workshop .wsp-space-options { margin-top:10px; }
+  #wsp-workshop .wsp-location-readout { margin-bottom:8px;min-height:20px; }
+  #wsp-workshop .wsp-label.wsp-grid-label { background:transparent; }
+  #wsp-workshop .wsp-label.wsp-grid-label.selected { background:var(--background);font-weight:500; }
+  #wsp-workshop .wsp-stage { position:relative;height:470px;overflow:hidden; }
+  #wsp-workshop #wsp-canvas, #wsp-workshop #wsp-labels { position:absolute;inset:0; }
+  #wsp-workshop #wsp-canvas canvas { display:block;width:100%;height:100%;touch-action:none;cursor:grab; }
+  #wsp-workshop #wsp-canvas canvas:active { cursor:grabbing; }
+  #wsp-workshop #wsp-labels { pointer-events:none; }
+  #wsp-workshop .wsp-label { position:absolute;transform:translate(-50%,-100%);color:var(--foreground);background:var(--background);padding:2px 5px;white-space:nowrap; }
+  #wsp-workshop .wsp-stage-top { position:absolute;top:10px;left:10px;right:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;pointer-events:none; }
+  #wsp-workshop .wsp-stage-top &gt; span { background:var(--background);padding:4px;max-width:55%;flex:1; }
+  #wsp-workshop .wsp-view-control { flex:0 0 145px;pointer-events:auto; }
+  #wsp-workshop .wsp-stage-bottom { position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-between;gap:12px;pointer-events:none; }
+  #wsp-workshop .wsp-stage-bottom span { background:var(--background);padding:2px 4px; }
+  #wsp-workshop .wsp-answer { padding:14px 0 10px;min-height:48px; }
+  #wsp-workshop .wsp-footer { display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px; }
+  #wsp-workshop #wsp-loading { position:absolute;inset:0;display:grid;place-content:center;background:var(--background); }
+  @media (max-width:520px) {
+    #wsp-workshop .wsp-coordinate-fields { grid-template-columns:minmax(0,1fr) auto; }
+    #wsp-workshop .wsp-coordinate-fields &gt; label:first-child { grid-column:1/-1; }
+    #wsp-workshop .wsp-stage { height:410px; }
+    #wsp-workshop #wsp-camera-note { display:none; }
+  }
+&lt;/style&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(function () {
+  const root = document.getElementById(&#x27;wsp-workshop&#x27;);
+  const el = function(id) { return root.querySelector(&#x27;#wsp-&#x27; + id); };
+  const loading = el(&#x27;loading&#x27;);
+  try {
+    if (!window.THREE || !window.d3) throw new Error(&#x27;The 3D library could not load. Reopen this view with an internet connection.&#x27;);
+    const DATA = {&quot;origin_lonlat&quot;:[-73.99745591666667,40.7308229],&quot;features&quot;:{&quot;park&quot;:{&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[-73.9965594,40.729649],[-73.9965667,40.7296414],[-73.9965717,40.7296361],[-73.9965832,40.7296307],[-73.9965971,40.7296307],[-73.9966028,40.7296321],[-73.9966186,40.729636],[-73.9972229,40.729933],[-73.997436,40.7300377],[-73.9979786,40.7303043],[-73.998105,40.7303665],[-73.9987536,40.7306852],[-73.9988773,40.730746],[-73.9994859,40.731045],[-73.9995048,40.7310543],[-73.9995125,40.7310599],[-73.9995149,40.7310616],[-73.9995207,40.7310732],[-73.999518,40.731086],[-73.9995164,40.7310906],[-73.999512,40.7310982],[-73.9995,40.7311129],[-73.9991151,40.731561],[-73.9990348,40.7316563],[-73.9986368,40.7321262],[-73.9986285,40.7321356],[-73.998616,40.7321423],[-73.9986005,40.7321463],[-73.9985827,40.7321448],[-73.9985667,40.7321401],[-73.9985538,40.732134],[-73.9977524,40.7317424],[-73.9971013,40.7314233],[-73.9969375,40.7313443],[-73.9969084,40.7313308],[-73.9956907,40.7307352],[-73.9956733,40.7307221],[-73.9956656,40.7307113],[-73.995666,40.7306999],[-73.995669,40.7306926],[-73.9956708,40.7306882],[-73.9956814,40.7306743],[-73.9960879,40.730201],[-73.9961631,40.7301117],[-73.9965594,40.729649]]]},&quot;approximate_center_lonlat&quot;:[-73.99770591818182,40.73087441136364]},&quot;arch&quot;:{&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[-73.9970293,40.731162],[-73.9972203,40.7312544],[-73.9971757,40.7313074],[-73.9969847,40.7312151],[-73.9970293,40.731162]]]},&quot;approximate_center_lonlat&quot;:[-73.9971025,40.731234725]},&quot;fountain&quot;:{&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:[[[-73.997448,40.7309279],[-73.9974824,40.7309253],[-73.9975149,40.7309164],[-73.9975435,40.7309017],[-73.9975664,40.7308821],[-73.9975823,40.7308588],[-73.99759,40.7308333],[-73.9975892,40.7308071],[-73.9975799,40.7307818],[-73.9975627,40.7307591],[-73.9975386,40.7307403],[-73.9975092,40.7307266],[-73.9974762,40.7307189],[-73.9974381,40.7307177],[-73.9974012,40.7307244],[-73.9973679,40.7307384],[-73.997341,40.7307588],[-73.9973223,40.7307839],[-73.9973133,40.7308119],[-73.9973147,40.7308407],[-73.9973263,40.7308681],[-73.9973473,40.7308922],[-73.9973761,40.730911],[-73.9974105,40.7309232],[-73.997448,40.7309279]]]},&quot;approximate_center_lonlat&quot;:[-73.99745591666667,40.7308229]}}};
+    const T = window.THREE;
+    const origin = DATA.origin_lonlat;
+    const projection = d3.geoMercator().center(origin).translate([0,0]).scale(6378137 * Math.cos(origin[1] * Math.PI / 180));
+    const mapped = function(feature) { return feature.geometry.coordinates[0].map(function(p) { return projection(p); }); };
+    const parkPoints = mapped(DATA.features.park);
+    const archPoints = mapped(DATA.features.arch);
+    const fountainPoints = mapped(DATA.features.fountain);
+    const archCenter = projection(DATA.features.arch.approximate_center_lonlat);
+    const A = {x:archCenter[0],z:archCenter[1]};
+    const archAngle = Math.atan2(archPoints[0][1]-archPoints[1][1],archPoints[0][0]-archPoints[1][0]);
+    const c = Math.cos(archAngle), s = Math.sin(archAngle);
+    function localToWorld(x,z) { return {x:A.x+c*x-s*z,z:A.z+s*x+c*z}; }
+    function worldToLocal(p) { const dx=p.x-A.x,dz=p.z-A.z;return {x:c*dx+s*dz,z:-s*dx+c*dz}; }
+    const benchPos = localToWorld(19,20);
+    const plazaPos = localToWorld(-15,12);
+    const home = localToWorld(0,23);
+    const westPier = localToWorld(-7.05,0);
+    const spots = {
+      under:{x:A.x,z:A.z,name:&#x27;Beneath the arch&#x27;,north:true},
+      pier:{x:westPier.x,z:westPier.z,name:&#x27;Western arch pier&#x27;},
+      fountain:{x:0,z:0,name:&#x27;Fountain basin&#x27;},
+      bench:{x:benchPos.x,z:benchPos.z,name:&#x27;Bench A&#x27;},
+      plaza:{x:plazaPos.x,z:plazaPos.z,name:&#x27;Open plaza&#x27;,north:true}
+    };
+    /* Schematic Washington Square Park addressing. x = east; z = south.
+ * Cells use half-open east/north bounds; geometry intersection includes edges.
+ */
+const SpaceMath = (() =&gt; {
+  &#x27;use strict&#x27;;
+  const CELL_SIZE = 20;
+  const MIN_X = -180;
+  const MIN_NORTH = -140;
+  const COLS = 17;
+  const ROWS = 15;
+  const EPS = 1e-9;
+
+  function makeCell(colIndex, rowIndex) {
+    if (!Number.isInteger(colIndex) || !Number.isInteger(rowIndex) ||
+        colIndex &lt; 0 || colIndex &gt;= COLS || rowIndex &lt; 0 || rowIndex &gt;= ROWS) return null;
+    const col = String.fromCharCode(65 + colIndex);
+    const row = rowIndex + 1;
+    const minX = MIN_X + colIndex * CELL_SIZE;
+    const minNorth = MIN_NORTH + rowIndex * CELL_SIZE;
+    const maxX = minX + CELL_SIZE;
+    const minZ = -(minNorth + CELL_SIZE);
+    const maxZ = -minNorth;
+    return {
+      id: `WSP-${col}${String(row).padStart(2, &#x27;0&#x27;)}`,
+      col, row, colIndex, rowIndex, minX, maxX, minZ, maxZ,
+      center: { x: (minX + maxX) / 2, z: (minZ + maxZ) / 2 }
+    };
+  }
+
+  function cellAt(point) {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.z)) return null;
+    const north = -point.z;
+    if (point.x &lt; MIN_X || point.x &gt;= MIN_X + COLS * CELL_SIZE ||
+        north &lt; MIN_NORTH || north &gt;= MIN_NORTH + ROWS * CELL_SIZE) return null;
+    return makeCell(Math.floor((point.x - MIN_X) / CELL_SIZE),
+      Math.floor((north - MIN_NORTH) / CELL_SIZE));
+  }
+
+  function cellById(text) {
+    if (typeof text !== &#x27;string&#x27;) return null;
+    const match = /^(?:WSP-?)?([A-Q])(0?[1-9]|1[0-5])$/.exec(text.replace(/\s+/g, &#x27;&#x27;).toUpperCase());
+    return match ? makeCell(match[1].charCodeAt(0) - 65, Number(match[2]) - 1) : null;
+  }
+
+  function asPoint(point) {
+    if (Array.isArray(point) &amp;&amp; Number.isFinite(point[0]) &amp;&amp; Number.isFinite(point[1])) {
+      return { x: point[0], z: point[1] };
+    }
+    if (point &amp;&amp; Number.isFinite(point.x) &amp;&amp; Number.isFinite(point.z)) return point;
+    return null;
+  }
+
+  function validRect(rect) {
+    return rect &amp;&amp; [&#x27;minX&#x27;, &#x27;maxX&#x27;, &#x27;minZ&#x27;, &#x27;maxZ&#x27;].every(key =&gt; Number.isFinite(rect[key])) &amp;&amp;
+      rect.minX &lt;= rect.maxX &amp;&amp; rect.minZ &lt;= rect.maxZ;
+  }
+
+  function pointInRect(point, rect) {
+    const p = asPoint(point);
+    return !!p &amp;&amp; !!validRect(rect) &amp;&amp; p.x &gt;= rect.minX - EPS &amp;&amp; p.x &lt;= rect.maxX + EPS &amp;&amp;
+      p.z &gt;= rect.minZ - EPS &amp;&amp; p.z &lt;= rect.maxZ + EPS;
+  }
+
+  function pointOnSegment(p, a, b) {
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    const scale = Math.max(1, Math.abs(dx), Math.abs(dz));
+    if (Math.abs((p.x - a.x) * dz - (p.z - a.z) * dx) &gt; EPS * scale) return false;
+    return p.x &gt;= Math.min(a.x, b.x) - EPS &amp;&amp; p.x &lt;= Math.max(a.x, b.x) + EPS &amp;&amp;
+      p.z &gt;= Math.min(a.z, b.z) - EPS &amp;&amp; p.z &lt;= Math.max(a.z, b.z) + EPS;
+  }
+
+  function pointInPolygon(point, points) {
+    const p = asPoint(point);
+    if (!p || !Array.isArray(points) || !points.length) return false;
+    const vertices = points.map(asPoint);
+    if (vertices.some(v =&gt; !v)) return false;
+    let inside = false;
+    for (let i = 0, j = vertices.length - 1; i &lt; vertices.length; j = i++) {
+      const a = vertices[j];
+      const b = vertices[i];
+      if (pointOnSegment(p, a, b)) return true;
+      if ((a.z &gt; p.z) !== (b.z &gt; p.z) &amp;&amp;
+          p.x &lt; (b.x - a.x) * (p.z - a.z) / (b.z - a.z) + a.x) inside = !inside;
+    }
+    return inside;
+  }
+
+  function segmentsIntersect(a, b, c, d) {
+    const cross = (p, q, r) =&gt; (q.x - p.x) * (r.z - p.z) - (q.z - p.z) * (r.x - p.x);
+    const abC = cross(a, b, c), abD = cross(a, b, d);
+    const cdA = cross(c, d, a), cdB = cross(c, d, b);
+    if (((abC &gt; 0 &amp;&amp; abD &lt; 0) || (abC &lt; 0 &amp;&amp; abD &gt; 0)) &amp;&amp;
+        ((cdA &gt; 0 &amp;&amp; cdB &lt; 0) || (cdA &lt; 0 &amp;&amp; cdB &gt; 0))) return true;
+    return pointOnSegment(a, c, d) || pointOnSegment(b, c, d) ||
+      pointOnSegment(c, a, b) || pointOnSegment(d, a, b);
+  }
+
+  function polygonIntersectsRect(points, rect) {
+    if (!validRect(rect) || !Array.isArray(points) || !points.length) return false;
+    const vertices = points.map(asPoint);
+    if (vertices.some(v =&gt; !v)) return false;
+    const corners = [
+      { x: rect.minX, z: rect.minZ }, { x: rect.maxX, z: rect.minZ },
+      { x: rect.maxX, z: rect.maxZ }, { x: rect.minX, z: rect.maxZ }
+    ];
+    if (vertices.some(p =&gt; pointInRect(p, rect)) || corners.some(p =&gt; pointInPolygon(p, vertices))) return true;
+    for (let i = 0; i &lt; vertices.length; i++) {
+      const a = vertices[i], b = vertices[(i + 1) % vertices.length];
+      for (let j = 0; j &lt; 4; j++) {
+        if (segmentsIntersect(a, b, corners[j], corners[(j + 1) % 4])) return true;
+      }
+    }
+    return false;
+  }
+
+  function circleIntersectsRect(center, radius, rect) {
+    const p = asPoint(center);
+    if (!p || !Number.isFinite(radius) || radius &lt; 0 || !validRect(rect)) return false;
+    const closestX = Math.max(rect.minX, Math.min(rect.maxX, p.x));
+    const closestZ = Math.max(rect.minZ, Math.min(rect.maxZ, p.z));
+    return Math.hypot(p.x - closestX, p.z - closestZ) &lt;= radius + EPS;
+  }
+
+  // Returns [first, second]. At the UI boundary convert north to south z:
+  // {x: pair[0], z: -pair[1]}.
+  function parsePair(text) {
+    if (typeof text !== &#x27;string&#x27;) return null;
+    const number = &#x27;[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?&#x27;;
+    const match = new RegExp(`^\\s*(${number})\\s*,\\s*(${number})\\s*$`).exec(text);
+    if (!match) return null;
+    const pair = [Number(match[1]), Number(match[2])];
+    return pair.every(Number.isFinite) ? pair : null;
+  }
+
+  return Object.freeze({ CELL_SIZE, MIN_X, MIN_NORTH, COLS, ROWS, cellAt, cellById,
+    pointInRect, pointInPolygon, containsPolygon: pointInPolygon, polygonContains: pointInPolygon,
+    polygonIntersectsRect, circleIntersectsRect, parsePair });
+})();
+
+    const state = {mode:&#x27;space&#x27;,object:&#x27;arch&#x27;,frame:&#x27;visitor&#x27;,heading:Math.round((Math.atan2(A.x-home.x,-(A.z-home.z))*180/Math.PI+360)%360/5)*5,view:&#x27;plaza&#x27;,place:&#x27;under&#x27;,probe:{x:A.x,z:A.z},visitor:{x:home.x,z:home.z},clue:0,system:&#x27;cell&#x27;,origin:&#x27;fountain&#x27;,showGrid:true,showIDs:true,version:2};
+    let placing=false;
+    const scene = new T.Scene();
+    const renderer = new T.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,2));
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type=T.PCFSoftShadowMap;
+    renderer.outputColorSpace=T.SRGBColorSpace;
+    renderer.toneMapping=T.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.15;
+    el(&#x27;canvas&#x27;).appendChild(renderer.domElement);
+    const camera = new T.PerspectiveCamera(42,1,.1,1800);
+    const cameraState={yaw:0.10,pitch:.63,distance:133};
+    const focus=new T.Vector3(A.x*.52,1,A.z*.52);
+    const materials=[];
+    const colorProbe=document.createElement(&#x27;span&#x27;);
+    colorProbe.hidden=true;root.appendChild(colorProbe);
+    function cssColor(token) {
+      colorProbe.style.color=&#x27;var(&#x27;+token+&#x27;)&#x27;;
+      const v=getComputedStyle(colorProbe).color;
+      return new T.Color(v);
+    }
+    function material(token,mix) {
+      const m=new T.MeshStandardMaterial({roughness:.88,metalness:0});
+      m.userData={token:token,mix:mix || 0};materials.push(m);return m;
+    }
+    const stone=material(&#x27;--background&#x27;,.18),trim=material(&#x27;--background&#x27;,.07);
+    const paving=material(&#x27;--background&#x27;,.065),grass=material(&#x27;--green&#x27;,.45);
+    const foliage=material(&#x27;--green&#x27;,.18),trunk=material(&#x27;--foreground&#x27;,.6);
+    const benchMat=material(&#x27;--foreground&#x27;,.30),basin=material(&#x27;--background&#x27;,.28);
+    const visitorMat=material(&#x27;--viz-series-2&#x27;,0);
+    const selectedMat=material(&#x27;--viz-series-1&#x27;,0);
+    const lit=new T.HemisphereLight(0xffffff,0xffffff,2.4);scene.add(lit);
+    const sun=new T.DirectionalLight(0xffffff,2.7);
+    sun.position.set(-60,110,70);sun.castShadow=true;
+    sun.shadow.mapSize.set(2048,2048);
+    Object.assign(sun.shadow.camera,{left:-180,right:180,top:180,bottom:-180,near:1,far:320});
+    sun.shadow.normalBias=.06;sun.shadow.bias=-.0001;scene.add(sun);
+    function mesh(geo,mat,parent,x,y,z) {
+      const m=new T.Mesh(geo,mat);m.position.set(x||0,y||0,z||0);m.castShadow=true;m.receiveShadow=true;(parent||scene).add(m);return m;
+    }
+    function box(w,h,d,mat,parent,x,y,z) { return mesh(new T.BoxGeometry(w,h,d),mat,parent,x,y,z); }
+    function disk(radius,y,mat,parent,x,z) { return mesh(new T.CylinderGeometry(radius,radius,.2,80),mat,parent,x,y,z); }
+    function shapeOf(points) {
+      const shape=new T.Shape();points.forEach(function(p,i){if(i===0)shape.moveTo(p[0],-p[1]);else shape.lineTo(p[0],-p[1]);});shape.closePath();return shape;
+    }
+    const ground=mesh(new T.ExtrudeGeometry(shapeOf(parkPoints),{depth:.7,bevelEnabled:false}),grass);
+    ground.rotation.x=-Math.PI/2;ground.position.y=-.7;ground.castShadow=false;
+    // The mapped boundary and landmark footprints are real; paths and planting are illustrative.
+    disk(28,.03,paving);
+    const axis=new T.Vector3(A.x,0,A.z).normalize();
+    function walkway(p1,p2,width) {
+      const dx=p2.x-p1.x,dz=p2.z-p1.z;
+      const m=box(width,.12,Math.hypot(dx,dz),paving,scene,(p1.x+p2.x)/2,.04,(p1.z+p2.z)/2);
+      m.rotation.y=Math.atan2(dx,dz);m.castShadow=false;
+    }
+    const northEnd=localToWorld(0,-18);
+    walkway({x:0,z:0},northEnd,25);
+    walkway({x:0,z:0},{x:-92,z:-108},7);
+    walkway({x:0,z:0},{x:98,z:58},7);
+    walkway({x:0,z:0},{x:-108,z:3},7);
+    walkway({x:0,z:0},{x:48,z:97},7);
+    const arch=new T.Group();arch.position.set(A.x,0,A.z);arch.rotation.y=-archAngle;scene.add(arch);
+    const W=19.1,H=22.4,D=6.9,R=4.57,spring=10.5;
+    const outline=new T.Shape();
+    outline.moveTo(-W/2,0);outline.lineTo(-W/2,H);outline.lineTo(W/2,H);
+    outline.lineTo(W/2,0);outline.lineTo(R,0);outline.lineTo(R,spring);
+    outline.absarc(0,spring,R,0,Math.PI,false);
+    outline.lineTo(-R,0);outline.lineTo(-W/2,0);
+    mesh(new T.ExtrudeGeometry(outline,{depth:D,bevelEnabled:false,curveSegments:48}),stone,arch,0,0,-D/2);
+    box(W+.7,.55,D+.6,trim,arch,0,17,0);
+    box(W+1,.7,D+1,trim,arch,0,21.3,0);
+    box(W+.4,.6,D+.4,stone,arch,0,22.4,0);
+    [-1,1].forEach(function(side) {
+      box(4.98,.6,D+.4,trim,arch,side*7.05,.3,0);
+      box(4.98,.5,D+.4,trim,arch,side*7.05,9.4,0);
+      [-1,1].forEach(function(face) {
+        box(.5,8,.28,trim,arch,side*5.1,5.2,face*(D/2+.08));
+        box(.5,8,.28,trim,arch,side*9.0,5.2,face*(D/2+.08));
+        box(2.1,3,.3,trim,arch,side*7.1,13.3,face*(D/2+.12));
+      });
+    });
+    const ringShape=new T.Shape();
+    ringShape.absarc(0,spring,R+.55,0,Math.PI,false);
+    ringShape.lineTo(-R,spring);
+    ringShape.absarc(0,spring,R,Math.PI,0,true);
+    ringShape.closePath();
+    [-1,1].forEach(function(face) {
+      mesh(new T.ExtrudeGeometry(ringShape,{depth:.2,bevelEnabled:false,curveSegments:48}),trim,arch,0,0,face&gt;0?D/2:-D/2-.2);
+    });
+    const fountain=new T.Group();scene.add(fountain);
+    mesh(new T.ExtrudeGeometry(shapeOf(fountainPoints),{depth:.65,bevelEnabled:false}),stone,fountain).rotation.x=-Math.PI/2;
+    disk(10.8,.69,basin,fountain);
+    mesh(new T.CylinderGeometry(1,1.4,3.2,20),stone,fountain,0,2.2,0);
+    mesh(new T.CylinderGeometry(3.2,1.6,.65,40),trim,fountain,0,3.9,0);
+    mesh(new T.CylinderGeometry(.5,.8,2.2,20),stone,fountain,0,5.2,0);
+    mesh(new T.CylinderGeometry(1.75,.7,.45,40),trim,fountain,0,6.4,0);
+    const bench=new T.Group();bench.position.set(benchPos.x,0,benchPos.z);bench.rotation.y=-archAngle;scene.add(bench);
+    box(4.6,.25,1.35,benchMat,bench,0,1.1,0);
+    box(4.6,.85,.18,benchMat,bench,0,1.65,.55);
+    [-1.7,1.7].forEach(function(x){box(.2,1.1,1.1,trunk,bench,x,.55,0);});
+    const visitor=new T.Group();scene.add(visitor);
+    mesh(new T.CapsuleGeometry(.42,.95,6,12),visitorMat,visitor,0,1.0,0);
+    mesh(new T.SphereGeometry(.33,16,12),visitorMat,visitor,0,2.0,0);
+    const visitorBase=mesh(new T.RingGeometry(.72,.85,36),visitorMat,visitor,0,.08,0);visitorBase.rotation.x=-Math.PI/2;visitorBase.material.side=T.DoubleSide;
+    const visitorArrow=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(0,.3,0),7,0xffffff,1.5,.9);visitor.add(visitorArrow);
+    const objects={
+      arch:{name:&#x27;Washington Square Arch&#x27;,group:arch,point:function(){return {x:A.x,z:A.z};},labelY:24,radius:12,description:&#x27;Northern entrance, at Fifth Avenue and Washington Square North.&#x27;},
+      fountain:{name:&#x27;Washington Square Fountain&#x27;,group:fountain,point:function(){return {x:0,z:0};},labelY:8,radius:13,description:&#x27;Central fountain plaza, southwest of the arch.&#x27;},
+      bench:{name:&#x27;Bench A&#x27;,group:bench,point:function(){return benchPos;},labelY:3,radius:4,description:&#x27;Workshop bench on the eastern side of the plaza.&#x27;},
+      visitor:{name:&#x27;Visitor A&#x27;,group:visitor,point:function(){return state.visitor;},labelY:3.5,radius:2,description:&#x27;Simulated visitor; move them in Inspect a place or Reference frame.&#x27;}
+    };
+    Object.keys(objects).forEach(function(key){objects[key].group.traverse(function(o){o.userData.referent=key;});});
+    // Reproducible decorative trees, kept outside the teaching plaza.
+    let seed=42;
+    function rand(){seed=(seed*1664525+1013904223)&gt;&gt;&gt;0;return seed/4294967296;}
+    const trees=[];
+    for(let i=0;i&lt;120;i++){
+      const x=-165+rand()*310,z=-145+rand()*278;
+      if(!d3.polygonContains(parkPoints,[x,z])||Math.hypot(x,z)&lt;38)continue;
+      const a=worldToLocal({x:x,z:z});
+      if(Math.abs(a.x)&lt;20&amp;&amp;a.z&gt;-25&amp;&amp;a.z&lt;65)continue;
+      if(Math.hypot(x-benchPos.x,z-benchPos.z)&lt;12)continue;
+      const h=6+rand()*5,rad=3+rand()*2;
+      mesh(new T.CylinderGeometry(.45,.7,h*.72,7),trunk,scene,x,h*.36,z);
+      mesh(new T.IcosahedronGeometry(rad,1),foliage,scene,x,h,z);
+      trees.push({x:x,z:z,radius:.7});
+    }
+    const selection=mesh(new T.RingGeometry(1,1.045,96),selectedMat);selection.rotation.x=-Math.PI/2;selection.material.side=T.DoubleSide;selection.position.y=.14;selection.castShadow=false;
+    const probe=mesh(new T.RingGeometry(.52,.66,48),selectedMat);probe.rotation.x=-Math.PI/2;probe.position.y=.18;probe.castShadow=false;
+    const probeStem=mesh(new T.CylinderGeometry(.06,.06,3,6),selectedMat);probeStem.castShadow=false;
+    const relationship=new T.Line(new T.BufferGeometry(),new T.LineDashedMaterial({color:0xffffff,dashSize:1.3,gapSize:.8}));scene.add(relationship);
+    const candidates=[];
+    [&#x27;under&#x27;,&#x27;fountain&#x27;,&#x27;bench&#x27;,&#x27;plaza&#x27;].forEach(function(key){
+      const sp=spots[key];const g=new T.Group();g.position.set(sp.x,0,sp.z);scene.add(g);
+      const m=mesh(new T.RingGeometry(2.5,2.8,48),selectedMat,g,0,.2,0);m.rotation.x=-Math.PI/2;m.castShadow=false;
+      candidates.push({key:key,group:g});
+    });
+    const compassGroup=new T.Group();compassGroup.position.set(-32,.12,-28);scene.add(compassGroup);
+    const northArrow=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(),12,0xffffff,2,1.2);compassGroup.add(northArrow);
+    const eastArrow=new T.ArrowHelper(new T.Vector3(1,0,0),new T.Vector3(),9,0xffffff,1.5,.9);compassGroup.add(eastArrow);
+    const labels=[];
+    function label(name,position,kind) {
+      const node=document.createElement(&#x27;span&#x27;);node.className=&#x27;wsp-label text-small&#x27;;node.textContent=name;el(&#x27;labels&#x27;).appendChild(node);labels.push({node:node,position:position,kind:kind});return node;
+    }
+    Object.keys(objects).forEach(function(key){const o=objects[key];label(key===&#x27;arch&#x27;?&#x27;Washington Square Arch&#x27;:o.name,function(){const p=o.point();return new T.Vector3(p.x,o.labelY,p.z);},key);});
+    label(&#x27;N&#x27;,function(){return new T.Vector3(-32,.4,-42);},&#x27;compass&#x27;);
+    label(&#x27;E&#x27;,function(){return new T.Vector3(-21,.4,-28);},&#x27;compass&#x27;);
+    label(&#x27;Fifth Avenue&#x27;,function(){const p=localToWorld(0,-23);return new T.Vector3(p.x,.6,p.z);},&#x27;street&#x27;);
+    label(&#x27;Sample&#x27;,function(){return new T.Vector3(state.probe.x,3.4,state.probe.z);},&#x27;sample&#x27;);
+    candidates.forEach(function(item){label(spots[item.key].name,function(){const p=spots[item.key];return new T.Vector3(p.x,2.5,p.z);},&#x27;clue-&#x27;+item.key);});
+    const gridMaterial=new T.LineBasicMaterial({transparent:true,opacity:.30});
+    const gridSegments=[];
+    function gridClip(fixed,vertical){
+      const crossings=[];
+      for(let i=0;i&lt;parkPoints.length-1;i++){
+        const p=parkPoints[i],q=parkPoints[i+1],v=vertical?0:1,u=vertical?1:0;
+        if((p[v]&lt;=fixed&amp;&amp;q[v]&gt;fixed)||(q[v]&lt;=fixed&amp;&amp;p[v]&gt;fixed)){
+          const t=(fixed-p[v])/(q[v]-p[v]);crossings.push(p[u]+t*(q[u]-p[u]));
+        }
+      }
+      crossings.sort(function(a,b){return a-b;});
+      for(let i=0;i+1&lt;crossings.length;i+=2){
+        const p=vertical?[fixed,.18,crossings[i]]:[crossings[i],.18,fixed];
+        const q=vertical?[fixed,.18,crossings[i+1]]:[crossings[i+1],.18,fixed];
+        gridSegments.push(new T.Vector3(...p),new T.Vector3(...q));
+      }
+    }
+    for(let x=-180;x&lt;=160;x+=20)gridClip(x,true);
+    for(let z=-160;z&lt;=140;z+=20)gridClip(z,false);
+    const grid=new T.LineSegments(new T.BufferGeometry().setFromPoints(gridSegments),gridMaterial);scene.add(grid);
+    const axes=new T.Group();scene.add(axes);
+    const axisEast=new T.ArrowHelper(new T.Vector3(1,0,0),new T.Vector3(0,.3,0),65,0xffffff,2.3,1.2);
+    const axisNorth=new T.ArrowHelper(new T.Vector3(0,0,-1),new T.Vector3(0,.3,0),68,0xffffff,2.3,1.2);
+    axes.add(axisEast,axisNorth);
+    const cellFillMat=new T.MeshBasicMaterial({transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide});
+    const cellFill=mesh(new T.PlaneGeometry(20,20),cellFillMat);cellFill.rotation.x=-Math.PI/2;cellFill.castShadow=false;cellFill.receiveShadow=false;cellFill.position.y=.21;
+    const cellEdge=new T.LineLoop(new T.BufferGeometry(),new T.LineBasicMaterial());scene.add(cellEdge);
+    const coordGuide=new T.Line(new T.BufferGeometry(),new T.LineDashedMaterial({dashSize:1,gapSize:.7}));scene.add(coordGuide);
+    const pointCross=new T.LineSegments(new T.BufferGeometry().setFromPoints([new T.Vector3(-1.5,0,0),new T.Vector3(1.5,0,0),new T.Vector3(0,0,-1.5),new T.Vector3(0,0,1.5)]),new T.LineBasicMaterial());scene.add(pointCross);
+    const cells=[];
+    for(let row=1;row&lt;=15;row++)for(let col=0;col&lt;17;col++){
+      const cell=SpaceMath.cellById(&#x27;WSP-&#x27;+String.fromCharCode(65+col)+String(row).padStart(2,&#x27;0&#x27;));
+      if(!SpaceMath.polygonIntersectsRect(parkPoints,cell))continue;
+      cell.node=label(cell.id.slice(4),function(){return new T.Vector3(cell.center.x,.3,cell.center.z);},&#x27;cell&#x27;);
+      cell.node.classList.add(&#x27;wsp-grid-label&#x27;);
+      labels[labels.length-1].cell=cell;
+      cells.push(cell);
+    }
+    const axisXLabel=label(&#x27;X · east (m)&#x27;,function(){const o=coordinateOrigin();return new T.Vector3(o.x+67,.4,o.z);},&#x27;axis&#x27;);
+    const axisYLabel=label(&#x27;Y · north (m)&#x27;,function(){const o=coordinateOrigin();return new T.Vector3(o.x,.4,o.z-70);},&#x27;axis&#x27;);
+    const originLabel=label(&#x27;O (0, 0)&#x27;,function(){const o=coordinateOrigin();return new T.Vector3(o.x,8,o.z);},&#x27;axis&#x27;);
+    const tickLabels=[];
+    [-40,-20,20,40,60].forEach(function(value){
+      const n=label(String(value),function(){const o=coordinateOrigin();return new T.Vector3(o.x+value,.4,o.z);},&#x27;tick&#x27;);
+      tickLabels.push({node:n,axis:&#x27;x&#x27;,value:value});
+    });
+    [-20,20,40,60].forEach(function(value){
+      const n=label(String(value),function(){const o=coordinateOrigin();return new T.Vector3(o.x,.4,o.z-value);},&#x27;tick&#x27;);
+      tickLabels.push({node:n,axis:&#x27;y&#x27;,value:value});
+    });
+    function coordinateOrigin(){return state.system===&#x27;local&#x27;&amp;&amp;state.origin===&#x27;arch&#x27;?A:{x:0,z:0};}
+    function activePoint(){return state.mode===&#x27;object&#x27;||state.mode===&#x27;frame&#x27;?objects[state.object].point():state.probe;}
+    function signed(value){const n=Math.abs(value)&lt;.05?0:value;return (n&gt;0?&#x27;+&#x27;:&#x27;&#x27;)+n.toFixed(1);}
+    function localCoordinates(p){const o=coordinateOrigin();return {x:p.x-o.x,y:o.z-p.z};}
+    function geographic(p){const ll=projection.invert([p.x,p.z]);return {lat:ll[1],lon:ll[0]};}
+    function gpsText(p){const g=geographic(p);return g.lat.toFixed(5)+&#x27;° N, &#x27;+Math.abs(g.lon).toFixed(5)+&#x27;° W&#x27;;}
+    function rectPolygon(x1,x2,z1,z2,transform){
+      return [[x1,z1],[x2,z1],[x2,z2],[x1,z2],[x1,z1]].map(function(v){const p=transform(v[0],v[1]);return [p.x,p.z];});
+    }
+    const pierPolygons=[rectPolygon(-9.75,-4.57,-3.65,3.65,localToWorld),rectPolygon(4.57,9.75,-3.65,3.65,localToWorld)];
+    const benchPolygon=rectPolygon(-2.3,2.3,-.7,.7,function(x,z){return {x:benchPos.x+c*x-s*z,z:benchPos.z+s*x+c*z};});
+    function cellOccupants(cell){
+      if(!cell)return [];
+      const result=[];
+      if(pierPolygons.some(function(poly){return SpaceMath.polygonIntersectsRect(poly,cell);}))result.push(&#x27;arch piers&#x27;);
+      if(SpaceMath.polygonIntersectsRect(fountainPoints,cell))result.push(&#x27;fountain&#x27;);
+      if(SpaceMath.polygonIntersectsRect(benchPolygon,cell))result.push(&#x27;Bench A&#x27;);
+      if(SpaceMath.circleIntersectsRect(state.visitor,.42,cell))result.push(&#x27;Visitor A&#x27;);
+      const count=trees.filter(function(t){return SpaceMath.circleIntersectsRect(t,t.radius,cell);}).length;
+      if(count)result.push(count+&#x27; tree &#x27;+(count===1?&#x27;trunk&#x27;:&#x27;trunks&#x27;));
+      return result;
+    }
+    function queryValue(){
+      const p=state.probe;
+      if(state.system===&#x27;cell&#x27;){const cell=SpaceMath.cellAt(p);return cell?cell.id:&#x27;&#x27;;}
+      if(state.system===&#x27;gps&#x27;){const g=geographic(p);return g.lat.toFixed(7)+&#x27;, &#x27;+g.lon.toFixed(7);}
+      const xy=localCoordinates(p);return signed(xy.x)+&#x27;, &#x27;+signed(xy.y);
+    }
+    function performLookup(){
+      const value=el(&#x27;query&#x27;).value.trim();
+      let p;
+      if(state.system===&#x27;cell&#x27;){
+        const cell=SpaceMath.cellById(value);
+        if(!cell||!SpaceMath.polygonIntersectsRect(parkPoints,cell))throw new Error(&#x27;Enter a workshop cell that intersects the park, for example WSP-K10.&#x27;);
+        p={x:cell.center.x,z:cell.center.z};
+      }else{
+        const pair=SpaceMath.parsePair(value);
+        if(!pair)throw new Error(&#x27;Enter two numbers separated by a comma.&#x27;);
+        if(state.system===&#x27;gps&#x27;){
+          if(Math.abs(pair[0])&gt;90||Math.abs(pair[1])&gt;180)throw new Error(&#x27;Use latitude first (−90 to 90), then longitude (−180 to 180).&#x27;);
+          const world=projection([pair[1],pair[0]]);p={x:world[0],z:world[1]};
+        }else{const o=coordinateOrigin();p={x:o.x+pair[0],z:o.z-pair[1]};}
+        const containing=SpaceMath.cellAt(p);
+        if(!containing||!SpaceMath.polygonIntersectsRect(parkPoints,containing))throw new Error(&#x27;That point is outside the workshop’s addressed spaces. Choose a cell that intersects the park.&#x27;);
+      }
+      state.probe=p;state.place=&#x27;custom&#x27;;
+      focus.set(p.x,1,p.z);state.view=&#x27;plaza&#x27;;
+      el(&#x27;query-error&#x27;).hidden=true;
+      update();save();
+    }
+    const compassNames=[&#x27;north&#x27;,&#x27;northeast&#x27;,&#x27;east&#x27;,&#x27;southeast&#x27;,&#x27;south&#x27;,&#x27;southwest&#x27;,&#x27;west&#x27;,&#x27;northwest&#x27;];
+    const relativeNames=[&#x27;ahead&#x27;,&#x27;ahead-right&#x27;,&#x27;right&#x27;,&#x27;behind-right&#x27;,&#x27;behind&#x27;,&#x27;behind-left&#x27;,&#x27;left&#x27;,&#x27;ahead-left&#x27;];
+    function sector(angle){return Math.floor((((angle%360)+360+22.5)%360)/45);}
+    function relation(target,observer,heading){
+      const dx=target.x-observer.x,dz=target.z-observer.z,dist=Math.hypot(dx,dz);
+      const t=heading*Math.PI/180;
+      const forward=dx*Math.sin(t)-dz*Math.cos(t),right=dx*Math.cos(t)+dz*Math.sin(t);
+      return {distance:dist,compass:compassNames[sector(Math.atan2(dx,-dz)*180/Math.PI)],relative:dist&lt;.5?&#x27;at the same position&#x27;:relativeNames[sector(Math.atan2(right,forward)*180/Math.PI)],forward:forward,right:right};
+    }
+    function circleRect(p,r,x1,x2,z1,z2){
+      const x=Math.max(x1,Math.min(x2,p.x)),z=Math.max(z1,Math.min(z2,p.z));return (p.x-x)*(p.x-x)+(p.z-z)*(p.z-z)&lt;=r*r;
+    }
+    function circlePolygon(p,r,points){
+      if(d3.polygonContains(points,[p.x,p.z]))return true;
+      for(let i=0;i&lt;points.length-1;i++){
+        const a=points[i],b=points[i+1],dx=b[0]-a[0],dz=b[1]-a[1];
+        const length2=dx*dx+dz*dz;
+        const t=length2?Math.max(0,Math.min(1,((p.x-a[0])*dx+(p.z-a[1])*dz)/length2)):0;
+        if(Math.hypot(p.x-a[0]-t*dx,p.z-a[1]-t*dz)&lt;=r)return true;
+      }
+      return false;
+    }
+    function staticOccupants(p,r){
+      const occupants=[],a=worldToLocal(p);
+      if(circleRect(a,r,-9.75,-4.57,-3.65,3.65)||circleRect(a,r,4.57,9.75,-3.65,3.65))occupants.push(&#x27;Arch pier&#x27;);
+      if(circlePolygon(p,r,fountainPoints))occupants.push(&#x27;Fountain basin&#x27;);
+      const bp={x:p.x-benchPos.x,z:p.z-benchPos.z};
+      if(circleRect({x:c*bp.x+s*bp.z,z:-s*bp.x+c*bp.z},r,-2.3,2.3,-.7,.7))occupants.push(&#x27;Bench A&#x27;);
+      if(trees.some(function(t){return Math.hypot(p.x-t.x,p.z-t.z)&lt;=r+t.radius;}))occupants.push(&#x27;Tree trunk&#x27;);
+      return occupants;
+    }
+    function occupancy(p){
+      const list=staticOccupants(p,.6);
+      if(Math.hypot(p.x-state.visitor.x,p.z-state.visitor.z)&lt;=1.02)list.push(&#x27;Visitor A&#x27;);
+      return list;
+    }
+    function canStand(p){return d3.polygonContains(parkPoints,[p.x,p.z])&amp;&amp;staticOccupants(p,.45).length===0;}
+    function candidateKeys(){
+      return [&#x27;under&#x27;,&#x27;fountain&#x27;,&#x27;bench&#x27;,&#x27;plaza&#x27;].filter(function(key){return state.clue===0||(state.clue===1?Math.hypot(spots[key].x-A.x,spots[key].z-A.z)&lt;=20:key===&#x27;under&#x27;);});
+    }
+    function coord(p){const xy=localCoordinates(p);return &#x27;X &#x27;+signed(xy.x)+&#x27; m, Y &#x27;+signed(xy.y)+&#x27; m&#x27;;}
+    function answer(){
+      const obj=objects[state.object],p=obj.point();
+      if(state.mode===&#x27;space&#x27;){
+        const cell=SpaceMath.cellAt(state.probe),cellList=cellOccupants(cell);
+        const exact=staticOccupants(state.probe,0);
+        if(Math.hypot(state.probe.x-state.visitor.x,state.probe.z-state.visitor.z)&lt;=.42)exact.push(&#x27;Visitor A&#x27;);
+        const a=worldToLocal(state.probe),overhead=Math.abs(a.x)&lt;4.57&amp;&amp;Math.abs(a.z)&lt;3.45?&#x27; (arch overhead)&#x27;:&#x27;&#x27;;
+        const pointText=d3.polygonContains(parkPoints,[state.probe.x,state.probe.z])?(exact.length?exact.join(&#x27; + &#x27;):&#x27;clear ground&#x27;+overhead):&#x27;outside the park boundary&#x27;;
+        return (cell?cell.id:&#x27;No cell&#x27;)+&#x27; contains &#x27;+(cellList.length?cellList.join(&#x27;, &#x27;):&#x27;no modeled occupants&#x27;)+&#x27; · At point P: &#x27;+pointText+&#x27;.&#x27;;
+      }
+      if(state.mode===&#x27;object&#x27;){
+        if(state.object===&#x27;visitor&#x27;){const r=relation(p,{x:0,z:0},0);return &#x27;Visitor A · &#x27;+r.distance.toFixed(1)+&#x27; m &#x27;+r.compass+&#x27; of the fountain (simulated).&#x27;;}
+        return obj.name+&#x27; · &#x27;+obj.description;
+      }
+      if(state.mode===&#x27;occupancy&#x27;){
+        const list=occupancy(state.probe),a=worldToLocal(state.probe);
+        const overhead=Math.abs(a.x)&lt;4.57&amp;&amp;Math.abs(a.z)&lt;3.45?&#x27; · arch overhead&#x27;:&#x27;&#x27;;
+        return (list.length?list.join(&#x27; + &#x27;):&#x27;No ground-level occupant&#x27;)+overhead+&#x27; · within the 0.6 m sample, in this simulation.&#x27;;
+      }
+      if(state.mode===&#x27;frame&#x27;){
+        if(state.frame===&#x27;coordinates&#x27;)return obj.name+&#x27; ground anchor · &#x27;+coord(p)+&#x27; · origin: &#x27;+(state.system===&#x27;local&#x27;&amp;&amp;state.origin===&#x27;arch&#x27;?&#x27;arch midpoint&#x27;:&#x27;fountain&#x27;)+&#x27;.&#x27;;
+        const r=relation(p,state.visitor,state.heading);
+        if(r.distance&lt;.5)return obj.name+&#x27; is at Visitor A’s position.&#x27;;
+        const words={ahead:&#x27;in front of&#x27;, &#x27;ahead-right&#x27;:&#x27;in front and to the right of&#x27;, right:&#x27;to the right of&#x27;, &#x27;behind-right&#x27;:&#x27;behind and to the right of&#x27;, behind:&#x27;behind&#x27;, &#x27;behind-left&#x27;:&#x27;behind and to the left of&#x27;, left:&#x27;to the left of&#x27;, &#x27;ahead-left&#x27;:&#x27;in front and to the left of&#x27;};
+        return obj.name+&#x27; is &#x27;+(state.frame===&#x27;visitor&#x27;?words[r.relative]+&#x27; Visitor A&#x27;:r.compass+&#x27; of Visitor A&#x27;)+&#x27; · &#x27;+r.distance.toFixed(1)+&#x27; m in the model.&#x27;;
+      }
+      const keys=candidateKeys();
+      return keys.length===1?&#x27;One match · meet beneath Washington Square Arch at the park’s northern entrance.&#x27;:keys.length+&#x27; marked candidates · &#x27;+keys.map(function(k){return spots[k].name;}).join(&#x27; / &#x27;);
+    }
+    function save(){
+      if(window.openai&amp;&amp;typeof window.openai.setWidgetState===&#x27;function&#x27;){
+        Promise.resolve(window.openai.setWidgetState({modelContent:{mode:state.mode,referent:objects[state.object].name,answer:answer(),heading:state.heading,frame:state.frame,coordinateSystem:state.system,cell:SpaceMath.cellAt(activePoint())?.id,position:localCoordinates(activePoint()),origin:state.origin},privateContent:{state:JSON.parse(JSON.stringify(state)),camera:cameraState,focus:{x:focus.x,z:focus.z}}})).catch(function(){});
+      }
+    }
+    function restore(snapshot){
+      const saved=snapshot&amp;&amp;snapshot.privateContent&amp;&amp;snapshot.privateContent.state;
+      if(!saved||saved.version!==2)return;
+      [&#x27;mode&#x27;,&#x27;object&#x27;,&#x27;frame&#x27;,&#x27;view&#x27;,&#x27;place&#x27;,&#x27;system&#x27;,&#x27;origin&#x27;].forEach(function(k){
+        const allowed={mode:[&#x27;space&#x27;,&#x27;object&#x27;,&#x27;occupancy&#x27;,&#x27;frame&#x27;,&#x27;clues&#x27;],object:Object.keys(objects),frame:[&#x27;visitor&#x27;,&#x27;compass&#x27;,&#x27;coordinates&#x27;],view:[&#x27;plaza&#x27;,&#x27;park&#x27;,&#x27;map&#x27;,&#x27;eye&#x27;],place:Object.keys(spots).concat(&#x27;custom&#x27;),system:[&#x27;cell&#x27;,&#x27;local&#x27;,&#x27;gps&#x27;],origin:[&#x27;fountain&#x27;,&#x27;arch&#x27;]};
+        if(allowed[k].includes(saved[k]))state[k]=saved[k];
+      });
+      if(Number.isFinite(saved.heading))state.heading=((saved.heading%360)+360)%360;
+      if(Number.isInteger(saved.clue)&amp;&amp;saved.clue&gt;=0&amp;&amp;saved.clue&lt;=2)state.clue=saved.clue;
+      [&#x27;visitor&#x27;,&#x27;probe&#x27;].forEach(function(k){const p=saved[k];if(p&amp;&amp;Number.isFinite(p.x)&amp;&amp;Number.isFinite(p.z)&amp;&amp;Math.abs(p.x)&lt;300&amp;&amp;Math.abs(p.z)&lt;300)state[k]={x:p.x,z:p.z};});
+      [&#x27;showGrid&#x27;,&#x27;showIDs&#x27;].forEach(function(k){if(typeof saved[k]===&#x27;boolean&#x27;)state[k]=saved[k];});
+      const savedFocus=snapshot.privateContent.focus;
+      if(savedFocus&amp;&amp;Number.isFinite(savedFocus.x)&amp;&amp;Number.isFinite(savedFocus.z)&amp;&amp;Math.abs(savedFocus.x)&lt;300&amp;&amp;Math.abs(savedFocus.z)&lt;300)focus.set(savedFocus.x,1,savedFocus.z);
+      const savedCamera=snapshot.privateContent.camera;
+      if(savedCamera){
+        if(Number.isFinite(savedCamera.yaw))cameraState.yaw=savedCamera.yaw%(Math.PI*2);
+        if(Number.isFinite(savedCamera.pitch))cameraState.pitch=Math.max(.22,Math.min(1.45,savedCamera.pitch));
+        if(Number.isFinite(savedCamera.distance))cameraState.distance=Math.max(60,Math.min(260,savedCamera.distance));
+      }
+    }
+    function updateCamera(){
+      const w=el(&#x27;stage&#x27;).clientWidth,h=el(&#x27;stage&#x27;).clientHeight;
+      const narrow=Math.max(1,.95/(w/h));
+      camera.up.set(0,1,0);
+      if(state.view===&#x27;eye&#x27;){
+        const t=state.heading*Math.PI/180;camera.position.set(state.visitor.x,1.75,state.visitor.z);
+        camera.lookAt(state.visitor.x+Math.sin(t)*30,3,state.visitor.z-Math.cos(t)*30);camera.fov=66;
+      }else if(state.view===&#x27;map&#x27;){
+        camera.position.set(focus.x,145*narrow,focus.z+.01);camera.up.set(0,0,-1);camera.lookAt(focus);camera.fov=42;
+      }else{
+        const distance=(state.view===&#x27;park&#x27;?400:cameraState.distance)*narrow;
+        const target=state.view===&#x27;park&#x27;?new T.Vector3(-10,0,-5):focus;
+        camera.up.set(0,1,0);
+        camera.position.set(target.x+Math.sin(cameraState.yaw)*Math.cos(cameraState.pitch)*distance,target.y+Math.sin(cameraState.pitch)*distance,target.z+Math.cos(cameraState.yaw)*Math.cos(cameraState.pitch)*distance);
+        camera.lookAt(target);camera.fov=42;
+      }
+      camera.aspect=w/h;camera.updateProjectionMatrix();camera.updateMatrixWorld();
+    }
+    function drawLabels(){
+      const w=el(&#x27;stage&#x27;).clientWidth,h=el(&#x27;stage&#x27;).clientHeight,occupied=[];
+      const priority=function(l){return l.kind===&#x27;cell&#x27;?3:l.kind===&#x27;tick&#x27;?2:l.kind===&#x27;axis&#x27;?1:0;};
+      labels.slice().sort(function(a,b){return priority(a)-priority(b);}).forEach(function(l){
+        let show=true;
+        if(l.kind===&#x27;sample&#x27;)show=state.mode===&#x27;occupancy&#x27;;
+        if(l.kind===&#x27;axis&#x27;||l.kind===&#x27;tick&#x27;)show=state.showGrid&amp;&amp;state.mode!==&#x27;clues&#x27;&amp;&amp;state.view!==&#x27;eye&#x27;;
+        if(l.kind===&#x27;compass&#x27;)show=!state.showGrid;
+        if(l.kind===&#x27;cell&#x27;){
+          const current=SpaceMath.cellAt(activePoint());
+          const near=Math.hypot(l.cell.center.x-focus.x,l.cell.center.z-focus.z)&lt;85;
+          show=state.showGrid&amp;&amp;state.showIDs&amp;&amp;state.mode!==&#x27;clues&#x27;&amp;&amp;state.view!==&#x27;eye&#x27;&amp;&amp;d3.polygonContains(parkPoints,[l.cell.center.x,l.cell.center.z])&amp;&amp;(state.view===&#x27;park&#x27;?l.cell.row%2===0&amp;&amp;l.cell.colIndex%2===0:near);
+          if(w&lt;500&amp;&amp;current&amp;&amp;l.cell.id!==current.id)show=show&amp;&amp;l.cell.row%2===0&amp;&amp;l.cell.colIndex%2===0;
+          l.node.classList.toggle(&#x27;selected&#x27;,!!current&amp;&amp;current.id===l.cell.id);
+        }
+        if(l.kind.indexOf(&#x27;clue-&#x27;)===0)show=state.mode===&#x27;clues&#x27;&amp;&amp;candidateKeys().includes(l.kind.slice(5));
+        if(objects[l.kind]&amp;&amp;state.mode===&#x27;clues&#x27;)show=false;
+        if(l.kind===&#x27;visitor&#x27;&amp;&amp;state.view===&#x27;eye&#x27;)show=false;
+        const v=l.position().project(camera);
+        const x=(v.x+1)*w/2,y=(-v.y+1)*h/2;
+        if(v.z&gt;1||v.z&lt; -1||x&lt;15||x&gt;w-15||y&lt;60||y&gt;h-40)show=false;
+        l.node.hidden=!show;
+        if(!show)return;
+        const nw=l.node.offsetWidth,nh=l.node.offsetHeight;
+        const left=Math.min(w-nw/2-6,Math.max(nw/2+6,x));
+        let top=y;
+        let fits=false;
+        for(let attempt=0;attempt&lt;4;attempt++){
+          const rect={x:left-nw/2,y:top-nh,w:nw,h:nh};
+          if(!occupied.some(function(b){return rect.x&lt;b.x+b.w+3&amp;&amp;rect.x+rect.w+3&gt;b.x&amp;&amp;rect.y&lt;b.y+b.h+3&amp;&amp;rect.y+rect.h+3&gt;b.y;})){occupied.push(rect);fits=true;break;}
+          if(l.kind===&#x27;cell&#x27;||l.kind===&#x27;tick&#x27;)break;
+          top+=nh+4;
+        }
+        if(!fits||top&gt;h-30){l.node.hidden=true;return;}
+        l.node.style.left=left+&#x27;px&#x27;;l.node.style.top=top+&#x27;px&#x27;;
+      });
+    }
+    let scheduled=false;
+    function render(){scheduled=false;if(!root.isConnected)return;updateCamera();renderer.render(scene,camera);drawLabels();}
+    function requestRender(){if(!scheduled){scheduled=true;requestAnimationFrame(render);}}
+    function theme(){
+      const bg=cssColor(&#x27;--background&#x27;),fg=cssColor(&#x27;--foreground&#x27;);
+      const dark=bg.getHSL({}).l&lt;.5,light=dark?fg:bg;
+      materials.forEach(function(m){
+        m.color.copy(cssColor(m.userData.token));
+        let blend=m.userData.mix;
+        if(dark&amp;&amp;m.userData.token===&#x27;--background&#x27;)blend=Math.min(.6,blend+.18);
+        if(blend)m.color.lerp(m.userData.token===&#x27;--background&#x27;?fg:bg,blend);
+      });
+      lit.color.copy(light);lit.groundColor.copy(bg.clone().lerp(fg,dark?.35:.12));lit.intensity=1.8;
+      sun.color.copy(light);sun.intensity=2.0;
+      const active=cssColor(&#x27;--viz-series-1&#x27;),neutral=fg.clone().lerp(bg,.35);
+      relationship.material.color.copy(active);visitorArrow.setColor(cssColor(&#x27;--viz-series-2&#x27;));northArrow.setColor(neutral);eastArrow.setColor(neutral);
+      gridMaterial.color.copy(fg);axisEast.setColor(neutral);axisNorth.setColor(neutral);
+      cellFillMat.color.copy(active);cellEdge.material.color.copy(active);coordGuide.material.color.copy(active);pointCross.material.color.copy(active);
+      renderer.setClearColor(bg,1);requestRender();
+    }
+    function update(){
+      root.querySelectorAll(&#x27;[data-mode]&#x27;).forEach(function(b){b.setAttribute(&#x27;aria-pressed&#x27;,String(b.dataset.mode===state.mode));});
+      el(&#x27;space-controls&#x27;).hidden=state.mode!==&#x27;space&#x27;;
+      el(&#x27;object-controls&#x27;).hidden=!(state.mode===&#x27;object&#x27;||state.mode===&#x27;frame&#x27;);
+      el(&#x27;frame-label&#x27;).hidden=state.mode!==&#x27;frame&#x27;;
+      el(&#x27;occupancy-controls&#x27;).hidden=state.mode!==&#x27;occupancy&#x27;;
+      el(&#x27;heading-controls&#x27;).hidden=state.mode!==&#x27;frame&#x27;;
+      el(&#x27;clue-controls&#x27;).hidden=state.mode!==&#x27;clues&#x27;;
+      [&#x27;object&#x27;,&#x27;frame&#x27;,&#x27;heading&#x27;,&#x27;view&#x27;,&#x27;place&#x27;,&#x27;clue&#x27;].forEach(function(k){el(k).value=state[k];});
+      el(&#x27;system&#x27;).value=state.system;el(&#x27;origin&#x27;).value=state.origin;
+      el(&#x27;origin-label&#x27;).hidden=state.system!==&#x27;local&#x27;;
+      el(&#x27;grid-toggle&#x27;).checked=state.showGrid;el(&#x27;ids-toggle&#x27;).checked=state.showIDs;
+      el(&#x27;query&#x27;).value=queryValue();
+      el(&#x27;query-label&#x27;).textContent={cell:&#x27;Space address&#x27;,local:&#x27;X, Y in metres&#x27;,gps:&#x27;Latitude, longitude · degrees&#x27;}[state.system];
+      el(&#x27;query&#x27;).placeholder={cell:&#x27;WSP-K10&#x27;,local:&#x27;29.8, 45.8&#x27;,gps:&#x27;40.7312347, -73.9971025&#x27;}[state.system];
+      el(&#x27;system-note&#x27;).textContent={cell:&#x27;WSP / column A–Q / row 01–15 · rows increase north&#x27;,local:&#x27;X east · Y north · ground level · negative values west / south&#x27;,gps:&#x27;Latitude first, longitude second · north/east positive&#x27;}[state.system];
+      const ap=activePoint(),cell=SpaceMath.cellAt(ap),originPoint=coordinateOrigin();
+      const readout=(cell?&#x27;NYC / Washington Square Park / &#x27;+cell.id:&#x27;Outside the address grid&#x27;)+&#x27; · &#x27;+coord(ap)+&#x27; · &#x27;+gpsText(ap);
+      el(&#x27;location-readout&#x27;).textContent=readout;
+      el(&#x27;location-readout&#x27;).hidden=state.mode===&#x27;clues&#x27;;
+      grid.visible=state.showGrid&amp;&amp;state.mode!==&#x27;clues&#x27;;
+      axes.visible=state.showGrid&amp;&amp;state.mode!==&#x27;clues&#x27;&amp;&amp;state.view!==&#x27;eye&#x27;;axes.position.set(originPoint.x,0,originPoint.z);
+      compassGroup.visible=!state.showGrid;
+      cellFill.visible=cellEdge.visible=!!cell&amp;&amp;state.mode!==&#x27;clues&#x27;;
+      if(cell){
+        cellFill.position.set(cell.center.x,.21,cell.center.z);
+        cellEdge.geometry.dispose();
+        cellEdge.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(cell.minX,.25,cell.minZ),new T.Vector3(cell.maxX,.25,cell.minZ),new T.Vector3(cell.maxX,.25,cell.maxZ),new T.Vector3(cell.minX,.25,cell.maxZ)]);
+      }
+      coordGuide.visible=state.mode===&#x27;space&#x27;&amp;&amp;state.system===&#x27;local&#x27;;
+      coordGuide.geometry.dispose();coordGuide.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(originPoint.x,.35,originPoint.z),new T.Vector3(ap.x,.35,originPoint.z),new T.Vector3(ap.x,.35,ap.z)]);coordGuide.computeLineDistances();
+      pointCross.visible=state.mode===&#x27;space&#x27;;pointCross.position.set(ap.x,.3,ap.z);
+      axisXLabel.textContent=state.system===&#x27;gps&#x27;?&#x27;Longitude → east&#x27;:&#x27;X → east (m)&#x27;;
+      axisYLabel.textContent=state.system===&#x27;gps&#x27;?&#x27;Latitude → north&#x27;:&#x27;Y → north (m)&#x27;;
+      originLabel.textContent=state.system===&#x27;gps&#x27;?&#x27;Fountain · reference&#x27;:&#x27;O (0, 0)&#x27;;
+      tickLabels.forEach(function(t){
+        if(state.system===&#x27;gps&#x27;){
+          const p=t.axis===&#x27;x&#x27;?{x:originPoint.x+t.value,z:originPoint.z}:{x:originPoint.x,z:originPoint.z-t.value};
+          const g=geographic(p);t.node.textContent=t.axis===&#x27;x&#x27;?Math.abs(g.lon).toFixed(4)+&#x27;° W&#x27;:g.lat.toFixed(4)+&#x27;° N&#x27;;
+        }else t.node.textContent=String(t.value);
+      });
+      el(&#x27;heading-value&#x27;).textContent=state.heading+&#x27;° · &#x27;+compassNames[sector(state.heading)].toUpperCase();
+      el(&#x27;candidate-count&#x27;).textContent=candidateKeys().length+&#x27; marked &#x27;+(candidateKeys().length===1?&#x27;candidate&#x27;:&#x27;candidates&#x27;);
+      el(&#x27;bring&#x27;).disabled=!canStand(state.probe);
+      el(&#x27;away&#x27;).disabled=Math.hypot(state.visitor.x-home.x,state.visitor.z-home.z)&lt;.1;
+      el(&#x27;move&#x27;).setAttribute(&#x27;aria-pressed&#x27;,String(placing));
+      el(&#x27;hint&#x27;).textContent=placing?&#x27;Click clear ground to place Visitor A&#x27;:state.mode===&#x27;space&#x27;?&#x27;Click a space · drag to orbit · scroll to zoom&#x27;:state.mode===&#x27;occupancy&#x27;?&#x27;Click ground to inspect · drag to orbit&#x27;:state.mode===&#x27;clues&#x27;?&#x27;Choose a clue · matching places are marked&#x27;:&#x27;Drag to orbit · scroll to zoom · click an object&#x27;;
+      el(&#x27;camera-note&#x27;).textContent=state.view===&#x27;eye&#x27;?&#x27;Camera follows Visitor A&#x27;:&#x27;Camera orbit does not turn the visitor&#x27;;
+      visitor.position.set(state.visitor.x,0,state.visitor.z);visitor.visible=state.view!==&#x27;eye&#x27;;
+      visitor.rotation.y=-state.heading*Math.PI/180;
+      const o=objects[state.object],p=o.point();
+      selection.position.set(p.x,.14,p.z);selection.scale.setScalar(o.radius);
+      selection.visible=state.mode===&#x27;object&#x27;||state.mode===&#x27;frame&#x27;;
+      probe.position.set(state.probe.x,.18,state.probe.z);
+      probeStem.position.set(state.probe.x,1.7,state.probe.z);
+      probe.visible=probeStem.visible=state.mode===&#x27;occupancy&#x27;||state.mode===&#x27;space&#x27;;
+      candidates.forEach(function(item){item.group.visible=state.mode===&#x27;clues&#x27;&amp;&amp;candidateKeys().includes(item.key);});
+      relationship.visible=state.mode===&#x27;frame&#x27;&amp;&amp;state.object!==&#x27;visitor&#x27;;
+      relationship.geometry.dispose();
+      relationship.geometry=new T.BufferGeometry().setFromPoints([new T.Vector3(state.visitor.x,.25,state.visitor.z),new T.Vector3(p.x,.25,p.z)]);
+      relationship.computeLineDistances();
+      el(&#x27;answer&#x27;).textContent=answer();requestRender();
+    }
+    function change(fn){fn();update();save();}
+    function handleLookup(){try{performLookup();}catch(error){el(&#x27;query-error&#x27;).textContent=error.message;el(&#x27;query-error&#x27;).hidden=false;}}
+    el(&#x27;locate&#x27;).addEventListener(&#x27;click&#x27;,handleLookup);
+    el(&#x27;query&#x27;).addEventListener(&#x27;keydown&#x27;,function(e){if(e.key===&#x27;Enter&#x27;){e.preventDefault();handleLookup();}});
+    [&#x27;system&#x27;,&#x27;origin&#x27;].forEach(function(k){el(k).addEventListener(&#x27;change&#x27;,function(){change(function(){state[k]=el(k).value;el(&#x27;query-error&#x27;).hidden=true;});});});
+    el(&#x27;grid-toggle&#x27;).addEventListener(&#x27;change&#x27;,function(){change(function(){state.showGrid=el(&#x27;grid-toggle&#x27;).checked;});});
+    el(&#x27;ids-toggle&#x27;).addEventListener(&#x27;change&#x27;,function(){change(function(){state.showIDs=el(&#x27;ids-toggle&#x27;).checked;});});
+    root.querySelectorAll(&#x27;[data-mode]&#x27;).forEach(function(b){b.addEventListener(&#x27;click&#x27;,function(){change(function(){state.mode=b.dataset.mode;placing=false;});});});
+    [&#x27;object&#x27;,&#x27;frame&#x27;,&#x27;view&#x27;].forEach(function(key){el(key).addEventListener(&#x27;change&#x27;,function(){change(function(){state[key]=el(key).value;});});});
+    el(&#x27;place&#x27;).addEventListener(&#x27;change&#x27;,function(){change(function(){state.place=el(&#x27;place&#x27;).value;const p=spots[state.place];state.probe={x:p.x,z:p.z};});});
+    el(&#x27;clue&#x27;).addEventListener(&#x27;change&#x27;,function(){change(function(){state.clue=Number(el(&#x27;clue&#x27;).value);});});
+    el(&#x27;heading&#x27;).addEventListener(&#x27;input&#x27;,function(){state.heading=Number(el(&#x27;heading&#x27;).value);update();});
+    el(&#x27;heading&#x27;).addEventListener(&#x27;change&#x27;,save);
+    el(&#x27;turn&#x27;).addEventListener(&#x27;click&#x27;,function(){change(function(){state.heading=(state.heading+180)%360;});});
+    el(&#x27;move&#x27;).addEventListener(&#x27;click&#x27;,function(){placing=!placing;update();});
+    el(&#x27;bring&#x27;).addEventListener(&#x27;click&#x27;,function(){if(canStand(state.probe))change(function(){state.visitor={x:state.probe.x,z:state.probe.z};});});
+    el(&#x27;away&#x27;).addEventListener(&#x27;click&#x27;,function(){change(function(){state.visitor={x:home.x,z:home.z};});});
+    const raycaster=new T.Raycaster(),pointer=new T.Vector2(),groundPlane=new T.Plane(new T.Vector3(0,1,0),0);
+    let down=null,moved=false;
+    const canvas=renderer.domElement;
+    canvas.addEventListener(&#x27;pointerdown&#x27;,function(e){down={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY};moved=false;canvas.setPointerCapture(e.pointerId);});
+    canvas.addEventListener(&#x27;pointermove&#x27;,function(e){
+      if(!down)return;
+      if(Math.hypot(e.clientX-down.x,e.clientY-down.y)&gt;4)moved=true;
+      if(moved&amp;&amp;state.view!==&#x27;eye&#x27;&amp;&amp;state.view!==&#x27;map&#x27;){
+        cameraState.yaw-=(e.clientX-down.lastX)*.008;
+        cameraState.pitch=Math.max(.22,Math.min(1.45,cameraState.pitch+(e.clientY-down.lastY)*.006));
+        requestRender();
+      }
+      down.lastX=e.clientX;down.lastY=e.clientY;
+    });
+    canvas.addEventListener(&#x27;pointerup&#x27;,function(e){
+      if(!down)return;
+      down=null;if(moved){save();return;}
+      const rect=canvas.getBoundingClientRect();
+      pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
+      raycaster.setFromCamera(pointer,camera);
+      const hit=new T.Vector3();
+      if(placing||state.mode===&#x27;occupancy&#x27;||state.mode===&#x27;space&#x27;){
+        if(!raycaster.ray.intersectPlane(groundPlane,hit))return;
+        const p={x:hit.x,z:hit.z};
+        if(!d3.polygonContains(parkPoints,[p.x,p.z]))return;
+        if(placing){
+          if(!canStand(p)){el(&#x27;answer&#x27;).textContent=&#x27;Choose clear ground inside the park.&#x27;;return;}
+          change(function(){state.visitor=p;placing=false;});
+        }else change(function(){state.probe=p;state.place=&#x27;custom&#x27;;el(&#x27;query-error&#x27;).hidden=true;});
+      }else if(state.mode!==&#x27;clues&#x27;){
+        const hits=raycaster.intersectObjects(Object.values(objects).map(function(o){return o.group;}),true);
+        if(hits.length)change(function(){state.object=hits[0].object.userData.referent;});
+      }
+    });
+    canvas.addEventListener(&#x27;pointercancel&#x27;,function(){down=null;});
+    let zoomSaveTimer;
+    canvas.addEventListener(&#x27;wheel&#x27;,function(e){
+      if(state.view===&#x27;plaza&#x27;){e.preventDefault();cameraState.distance=Math.max(60,Math.min(260,cameraState.distance*Math.exp(e.deltaY*.001)));requestRender();clearTimeout(zoomSaveTimer);zoomSaveTimer=setTimeout(save,250);}
+    },{passive:false});
+    const resize=new ResizeObserver(function(){renderer.setSize(el(&#x27;stage&#x27;).clientWidth,el(&#x27;stage&#x27;).clientHeight);requestRender();});resize.observe(el(&#x27;stage&#x27;));
+    const mutation=new MutationObserver(theme);mutation.observe(document.documentElement,{attributes:true,attributeFilter:[&#x27;class&#x27;,&#x27;style&#x27;,&#x27;data-theme&#x27;,&#x27;data-color-scheme&#x27;]});
+    window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x27;change&#x27;,theme);
+    window.addEventListener(&#x27;openai:set_globals&#x27;,function(e){if(e.detail&amp;&amp;e.detail.globals&amp;&amp;e.detail.globals.widgetState){restore(e.detail.globals.widgetState);update();}});
+    restore(window.openai&amp;&amp;window.openai.widgetState);
+    theme();update();loading.hidden=true;
+    // Read-only diagnostic access for targeted verification.
+    root.wsp={state:state,relation:relation,occupancy:occupancy,canStand:canStand,spots:spots,worldToLocal:worldToLocal,localToWorld:localToWorld,candidateKeys:candidateKeys,renderer:renderer,SpaceMath:SpaceMath,cellOccupants:cellOccupants,geographic:geographic,localCoordinates:localCoordinates,projection:projection,cells:cells,project:function(p){updateCamera();const v=new T.Vector3(p.x,p.y||0,p.z).project(camera);return {x:(v.x+1)*el(&#x27;stage&#x27;).clientWidth/2,y:(1-v.y)*el(&#x27;stage&#x27;).clientHeight/2};}};
+  } catch(error) {
+    loading.textContent=error.message;
+    loading.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);
+  }
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
+    const selected =
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  let viewportHeight = globalThis.innerHeight;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height === "number" &&
+        Number.isFinite(height) &&
+        height >= 0 &&
+        height <= 10_000
+      ) {
+        frame.style.height = Math.ceil(height) + "px";
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!Number.isFinite(height) || height <= viewportHeight) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  frame.srcdoc = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  delete frame.dataset.srcdoc;
+})();
+</script>
+</body>
+</html>

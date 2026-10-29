@@ -1,6 +1,6 @@
 'use strict';
 // Integration checks read the app's actual geometry, starting positions,
-// destinations and preset function, so changing the map also changes this test.
+// and preset function, so changing the map also changes this test.
 // Only these isolated declarations run in the VM; no DOM/app bootstrap executes.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -10,20 +10,20 @@ const D=require('../src/distance-math.js');
 const source=fs.readFileSync(path.join(__dirname,'../src/simulation.js'),'utf8');
 const dataStart=source.indexOf('  const basePositions =');
 const dataEnd=source.indexOf('  const router =',dataStart);
-const destinationsDeclaration=source.match(/  const destinations = [^;]+;/);
+const destinations=[{x:15,z:65},{x:88,z:30},{x:150,z:55},{x:223,z:145},{x:160,z:150},{x:78,z:115},{x:12,z:140},{x:223,z:8}]; // Fixed routing probes; motion samples random destinations.
 const presetDeclaration=source.match(/  function preset\(which\) \{[\s\S]*?\n  \}/);
-assert.ok(dataStart>=0&&dataEnd>dataStart&&destinationsDeclaration&&presetDeclaration,
+assert.ok(dataStart>=0&&dataEnd>dataStart&&presetDeclaration,
   'Simulation declarations changed; update this test extractor before running.');
 const context={structuredClone};
 vm.runInNewContext([
-  source.slice(dataStart,dataEnd),destinationsDeclaration[0],
-  'const state={}; const walks=new Map();',
+  source.slice(dataStart,dataEnd),
+  'const state={};',
   'function pause(){} function error(){} function syncControls(){} function refresh(){}',
   presetDeclaration[0],
   "const scenarios=['far','near','detour'].map(name=>{preset(name);return {name,...structuredClone(state)};});",
-  'globalThis.fixture={basePositions,defaultEdges,buildings,pond,boundary,obstacles,destinations,scenarios};'
+  'globalThis.fixture={basePositions,defaultEdges,buildings,pond,boundary,obstacles,scenarios};'
 ].join('\n'),context,{timeout:1000});
-const f=JSON.parse(JSON.stringify(context.fixture));
+const f={...JSON.parse(JSON.stringify(context.fixture)),destinations};
 const router=D.createRouter({boundary:f.boundary,obstacles:f.obstacles,circles:[f.pond],gridSize:2});
 const ids=Object.keys(f.basePositions);
 let routeChecks=0,segmentChecks=0,groundSamples=0;
@@ -32,7 +32,7 @@ function validate(a,b) {
   assert.equal(router.pointStatus(a),'ok','Route origin must be clear ground.');
   assert.equal(router.pointStatus(b),'ok','Route destination must be clear ground.');
   const result=router.route(a,b);
-  assert.equal(result.status,'ok','Every base position and movement destination must connect.');
+  assert.equal(result.status,'ok','Every base position and routing probe must connect.');
   assert.ok(result.distance+1e-7>=D.euclidean(a,b));
   assert.ok(Math.abs(D.pathLength(result.path)-result.distance)<1e-7);
   assert.deepEqual(result.path[0],a);assert.deepEqual(result.path.at(-1),b);

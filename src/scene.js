@@ -176,9 +176,12 @@
       label.style.cssText='position:absolute;transform:translate(-50%,-100%);white-space:nowrap;pointer-events:auto;';
       const dot=document.createElement('span');dot.className='scene-label-dot';dot.style.background=tint.getStyle();
       const name=document.createElement('span');name.className='scene-label-name';name.textContent=names[id];
-      const role=document.createElement('small');role.hidden=true;label.append(dot,name,role);labels.appendChild(label);
+      const role=document.createElement('small');role.hidden=true;
+      const motionStatus=document.createElement('span');motionStatus.className='scene-motion-status';motionStatus.hidden=true;motionStatus.setAttribute('aria-hidden','true');
+      motionStatus.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-width:9px;margin-left:1px;font-size:10px;line-height:1;opacity:.8;';
+      label.append(dot,name,role,motionStatus);labels.appendChild(label);
       label.addEventListener('click',event=>{event.stopPropagation();if(!placing&&onSelect)onSelect(id);});
-      agents.set(id,{group,person,ring,disk,label,role,legs,index:i,last:new T.Vector3(),screen:{x:0,y:0},position:new T.Vector3()});
+      agents.set(id,{group,person,ring,disk,label,role,motionStatus,legs,index:i,hasPosition:false,movedSinceRender:false,gaitPhase:i,motionMode:null,screen:{x:0,y:0},position:new T.Vector3()});
     });
     const distanceLabel=document.createElement('div');distanceLabel.className='scene-label distance-label';distanceLabel.style.cssText='position:absolute;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;z-index:5;';labels.appendChild(distanceLabel);
     const direct=new T.Mesh(lineGeometry,materials.direct);direct.renderOrder=20;scene.add(direct);
@@ -216,18 +219,46 @@
       }
       for(let i=used;i<routeSegments.length;i++)routeSegments[i].visible=false;
     }
+    function neutralPose(item) {
+      if(item.legs[0].rotation.x!==0||item.legs[1].rotation.x!==0||item.person.position.y!==0) {
+        item.legs[0].rotation.x=0;item.legs[1].rotation.x=0;item.person.position.y=0;dirty=true;
+      }
+    }
+    function motionDescription(id) {
+      const motion=state.motion?.agents?.[id],partner=motion?.partner&&names[motion.partner];
+      const descriptions={
+        approaching:partner?'Approaching '+partner:'Approaching a companion',
+        together:partner?'Walking with '+partner:'Walking with a companion',
+        wandering:'Wandering independently',
+        waiting:partner?'Waiting for '+partner:'Waiting',
+      };
+      return {mode:motion?.mode||null,text:descriptions[motion?.mode]||'Independent movement',
+        symbol:{approaching:'↗',together:'↔',wandering:'·',waiting:'Ⅱ'}[motion?.mode]||''};
+    }
     function update(next) {
       state={...state,...next};
       for(const [id,item] of agents) {
         const p=state.positions[id];if(!p)continue;
-        const dx=p.x-item.group.position.x,dz=p.z-item.group.position.z;
-        if(Math.hypot(dx,dz)>.015 && state.playing)item.person.rotation.y=Math.atan2(dx,dz);
-        item.group.position.set(p.x,0,p.z);
+        const dx=p.x-item.group.position.x,dz=p.z-item.group.position.z,travel=Math.hypot(dx,dz);
+        if(item.hasPosition&&state.playing&&travel>1e-6) {
+          item.person.rotation.y=Math.atan2(dx,dz);
+          item.movedSinceRender=true;item.gaitPhase=(item.gaitPhase+travel*2.8)%(Math.PI*2);
+        }
+        item.group.position.set(p.x,0,p.z);item.hasPosition=true;
+        const motion=motionDescription(id);item.motionMode=motion.mode;
+        if(!state.playing||motion.mode==='waiting') {item.movedSinceRender=false;neutralPose(item);}
         const selected=id===state.a||id===state.b;
         item.ring.visible=selected;item.disk.scale.setScalar(selected?1.3:.83);
         item.label.classList.toggle('selected',selected);item.label.classList.toggle('endpoint-a',id===state.a);item.label.classList.toggle('endpoint-b',id===state.b);
         item.role.hidden=!selected;item.role.textContent=id===state.a&&id===state.b?'A·B':id===state.a?'A':'B';
         item.label.setAttribute('aria-pressed',String(id===state.b));
+        const occupant=id===state.a&&id===state.b?'occupants A and B':id===state.a?'occupant A':id===state.b?'occupant B':'';
+        const description=names[id]+(occupant?', '+occupant:'')+'. '+(!state.playing?'Paused. ':'')+motion.text+'.';
+        item.label.title=description;
+        item.label.setAttribute('aria-label',description+' Select as occupant B.');
+        item.label.dataset.motion=motion.mode||'independent';
+        item.motionStatus.hidden=!motion.mode;item.motionStatus.textContent=motion.symbol;
+        item.motionStatus.title=motion.text;
       }
       const a=state.positions[state.a],b=state.positions[state.b];
       if(a&&b) {
@@ -340,11 +371,17 @@
         const delta=goal[key]-orbit[key];if(Math.abs(delta)>.0001){orbit[key]+=delta*(reducedMotion?1:.14);moving=true;}
       }
       if(moving){updateCamera();dirty=true;}
+      for(const item of agents.values()) {
+        // Consume actual travel once per rendered frame. A second update with the
+        // same coordinates must not erase movement, and waiting must not walk in place.
+        if(state.playing&&!reducedMotion&&item.movedSinceRender&&item.motionMode!=='waiting') {
+          item.legs[0].rotation.x=Math.sin(item.gaitPhase)*.22;
+          item.legs[1].rotation.x=-Math.sin(item.gaitPhase)*.22;
+          item.person.position.y=Math.abs(Math.sin(item.gaitPhase))*.09;dirty=true;
+        } else neutralPose(item);
+        item.movedSinceRender=false;
+      }
       if(state.playing&&!reducedMotion) {
-        for(const item of agents.values()) {
-          const phase=time*.009+item.index;item.legs[0].rotation.x=Math.sin(phase)*.22;item.legs[1].rotation.x=-Math.sin(phase)*.22;
-          item.person.position.y=Math.abs(Math.sin(phase))*.09;
-        }
         rippleRings.forEach((ring,i)=>{ring.material.opacity=.13+Math.sin(time*.0005+i)*.05;});dirty=true;
       }
       if(dirty){renderer.render(scene,camera);layoutLabels();dirty=false;}

@@ -19,8 +19,7 @@
   const obstacles = buildings.map(b => [[b.x,b.z],[b.x+b.w,b.z],[b.x+b.w,b.z+b.h],[b.x,b.z+b.h]]);
   const router = D.createRouter({boundary, obstacles, circles:[pond], gridSize:2});
   const state = {a:'a',b:'b',positions:structuredClone(basePositions),edges:structuredClone(defaultEdges),playing:false,placing:false,speed:4,scenario:'far'};
-  const walks = new Map();
-  const destinations = [{x:15,z:65},{x:88,z:30},{x:150,z:55},{x:223,z:145},{x:160,z:150},{x:78,z:115},{x:12,z:140},{x:223,z:8}];
+  const motion = window.SocialMotion.create({ids,router,bounds:{minX:0,maxX:240,minZ:0,maxZ:160},speed:1.4});
   let lastTime=0,lastMeasure=0;
   const key = (a,b) => [a,b].sort().join('-');
   const fmt = n => Number.isFinite(n) ? n.toFixed(1) : '∞';
@@ -46,7 +45,7 @@
   function placePerson(point) {
     if(!state.placing)return;
     if(router.pointStatus(point)!=='ok'){error('Choose clear ground outside the pond and buildings.');return;}
-    state.positions[state.b]={x:point.x,z:point.z};walks.delete(state.b);state.placing=false;state.scenario='';error();syncControls();refresh();
+    state.positions[state.b]={x:point.x,z:point.z};state.placing=false;state.scenario='';error();syncControls();refresh();
   }
   try {
     plaza=window.createPlazaScene({host:world,buildings,pond,names,colors,
@@ -58,7 +57,7 @@
   }
   function drawMap() {
     if(plaza)plaza.update({positions:state.positions,a:state.a,b:state.b,playing:state.playing,
-      path:measurement?.walking.path||[],spatial:measurement?.spatial||0,social:measurement?.social.distance??0,edges:state.edges});
+      path:measurement?.walking.path||[],spatial:measurement?.spatial||0,social:measurement?.social.distance??0,edges:state.edges,motion:motion.status()});
   }
   document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
     document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
@@ -128,7 +127,7 @@
     $('route-note').textContent=result.walking.status!=='ok'?'These positions cannot be connected by the modeled route.':extra>.1?'+'+extra.toFixed(1)+' m beyond the direct line · approximate route.':'A clear route · the walk matches the straight line.';
     $('chain').textContent=result.social.connected?result.social.path.map(id=>names[id]).join(' → '):'No chain. Add a friendship to reconnect the groups.';
     $('addresses').textContent='A · '+names[state.a]+' occupies '+location(state.positions[state.a])+'. B · '+names[state.b]+' occupies '+location(state.positions[state.b])+'.';
-    drawNetwork(result.social);drawChart();
+    drawNetwork(result.social);drawChart();drawBehavior();
     if(updateFields)syncPositionFields();
   }
   function syncPositionFields() {
@@ -142,10 +141,31 @@
     $('map-instruction').textContent=state.placing?'Click clear ground to place '+names[state.b]+' (occupant B).':'Drag to orbit · scroll to zoom · select a person';
     plaza?.setPlacing(state.placing);world.style.cursor=state.placing?'crosshair':'';
     for(const input of $('ties').querySelectorAll('input'))input.checked=state.edges.some(([a,b])=>key(a,b)===input.value);
+    const same=state.a===state.b,friend=state.edges.some(([a,b])=>key(a,b)===key(state.a,state.b));
+    $('pair-friend').disabled=same;$('pair-friend').checked=!same&&friend;
+    $('pair-friend').setAttribute('aria-label',names[state.a]+' and '+names[state.b]+' are friends');
+    $('friendship-label').textContent=same?'Same person':friend?'Friends':'Not friends';
+    motion.sync({positions:state.positions,edges:state.edges,preferredPair:[state.a,state.b]});
   }
-  function pause(syncFields=true) {state.playing=false;$('play').textContent='▶ Run simulation';$('run-state').textContent='Paused';$('run-state').classList.remove('running');if(syncFields)syncPositionFields();drawMap();}
+  function drawBehavior() {
+    const status=motion.status(),a=status.agents[state.a],paired=a?.partner===state.b&&state.a!==state.b;
+    let title,detail,mode=paired?a.mode:'wandering';
+    if(state.a===state.b) {
+      title='One visitor selected';detail=names[state.a]+' explores independently. Choose two people to try friendship.';
+    } else if(paired&&a.mode==='together') {
+      title=state.playing?'Walking together':'Together · paused';detail=names[state.a]+' + '+names[state.b]+' share destinations and follow the same route, a few metres apart.';
+    } else if(paired) {
+      title=state.playing?'Finding each other':'Ready to meet';detail=names[state.a]+' + '+names[state.b]+(state.playing?' are taking a shared route to meet.':' will approach each other when you press Run.');
+    } else {
+      title=state.playing?'Independent walks':'Ready to wander';detail='Each selected person chooses a random destination. They do not seek or follow each other.';
+    }
+    $('motion-readout').dataset.mode=mode;
+    if($('motion-title').textContent!==title)$('motion-title').textContent=title;
+    if($('motion-detail').textContent!==detail)$('motion-detail').textContent=detail;
+  }
+  function pause(syncFields=true) {state.playing=false;$('play').textContent='▶ Run simulation';$('run-state').textContent='Paused';$('run-state').classList.remove('running');if(syncFields)syncPositionFields();drawMap();drawBehavior();}
   function preset(which) {
-    pause();walks.clear();error();state.positions=structuredClone(basePositions);state.edges=structuredClone(defaultEdges);state.a='a';state.b={far:'b',near:'c',detour:'d'}[which];state.scenario=which;state.placing=false;
+    pause();error();state.positions=structuredClone(basePositions);state.edges=structuredClone(defaultEdges);state.a='a';state.b={far:'b',near:'c',detour:'d'}[which];state.scenario=which;state.placing=false;
     if(which==='detour'){state.positions.a={x:77,z:80};state.positions.d={x:143,z:80};}
     syncControls();refresh();
   }
@@ -156,6 +176,12 @@
     const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.value=key(a,b);input.setAttribute('aria-label',names[a]+' and '+names[b]+' friendship');label.append(input,document.createTextNode(a.toUpperCase()+'–'+b.toUpperCase()));$('ties').appendChild(label);
     input.addEventListener('change',()=>{state.edges=state.edges.filter(([x,y])=>key(x,y)!==input.value);if(input.checked)state.edges.push([a,b]);state.scenario='';syncControls();refresh(false);});
   }));
+  $('pair-friend').addEventListener('change',()=>{
+    if(state.a===state.b)return;
+    state.edges=state.edges.filter(([a,b])=>key(a,b)!==key(state.a,state.b));
+    if($('pair-friend').checked)state.edges.push([state.a,state.b]);
+    state.scenario='';error();syncControls();refresh(false);
+  });
   ['a','b'].forEach(which=>$('person-'+which).addEventListener('change',()=>{state[which]=$('person-'+which).value;state.scenario='';state.placing=false;error();syncControls();refresh();}));
   $('swap').addEventListener('click',()=>{[state.a,state.b]=[state.b,state.a];state.scenario='';syncControls();refresh();});
   document.querySelectorAll('[data-scenario]').forEach(button=>button.addEventListener('click',()=>preset(button.dataset.scenario)));
@@ -174,32 +200,17 @@
     const a=parsePosition($('position-a').value),b=parsePosition($('position-b').value);pause(false);
     if(!a||!b){error('Enter X, Y on clear ground (X: 0–240; Y: 0–160), outside the pond and buildings.');return;}
     if(state.a===state.b&&D.euclidean(a,b)>.001){error('The same person must have the same position in both fields.');return;}
-    state.positions[state.a]=a;state.positions[state.b]=b;walks.clear();state.scenario='';error();syncControls();refresh();
+    state.positions[state.a]=a;state.positions[state.b]=b;state.scenario='';error();syncControls();refresh();
   }
   $('apply-positions').addEventListener('click',applyPositions);
   ['position-a','position-b'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')applyPositions();}));
-  function nextWalk(id) {
-    const previous=walks.get(id),step=previous?previous.step+1:ids.indexOf(id)*2;
-    const target=destinations[step%destinations.length];
-    const path=router.route(state.positions[id],target).path;
-    const walk={path,index:1,step};walks.set(id,walk);return walk;
-  }
-  function advance(id,distance) {
-    let walk=walks.get(id)||nextWalk(id),guard=0;
-    while(distance>0&&guard++<20) {
-      if(walk.index>=walk.path.length){walk=nextWalk(id);if(walk.path.length<2)return;}
-      const p=state.positions[id],target=walk.path[walk.index],length=D.euclidean(p,target);
-      if(distance>=length){state.positions[id]={...target};distance-=length;walk.index++;}
-      else {const t=distance/length;state.positions[id]={x:p.x+(target.x-p.x)*t,z:p.z+(target.z-p.z)*t};distance=0;}
-    }
-  }
   $('play').addEventListener('click',()=>{
     if(state.playing){pause();refresh();return;}
-    state.playing=true;state.placing=false;state.scenario='';error();syncControls();$('play').textContent='Ⅱ Pause simulation';$('run-state').textContent='Running';$('run-state').classList.add('running');lastTime=0;
+    state.playing=true;state.placing=false;state.scenario='';error();syncControls();$('play').textContent='Ⅱ Pause simulation';$('run-state').textContent='Running';$('run-state').classList.add('running');drawBehavior();lastTime=0;
   });
   function tick(time) {
     const dt=lastTime?Math.min((time-lastTime)/1000,.1):0;lastTime=time;
-    if(state.playing){ids.forEach(id=>advance(id,dt*1.4*state.speed));drawMap();if(time-lastMeasure>180){refresh(false);lastMeasure=time;}}
+    if(state.playing){motion.step(dt*state.speed);drawMap();if(time-lastMeasure>180){refresh(false);lastMeasure=time;}}
     requestAnimationFrame(tick);
   }
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});

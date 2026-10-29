@@ -6,7 +6,7 @@
   const NS = 'http://www.w3.org/2000/svg';
   const names = {a:'Ava',b:'Ben',c:'Cleo',d:'Dev',e:'Emi',f:'Finn'};
   const ids = Object.keys(names);
-  const colors = {a:'#176c60',b:'#c05c3c',c:'#6256a0',d:'#426b98',e:'#8b6927',f:'#7e555e'};
+  const colors = {a:'#efbc77',b:'#9bd2c8',c:'#c3b0df',d:'#a4bddd',e:'#d8ce9e',f:'#d8a8b3'};
   const basePositions = {a:{x:40,z:80},b:{x:205,z:55},c:{x:45,z:85},d:{x:150,z:80},e:{x:65,z:135},f:{x:190,z:125}};
   const defaultEdges = [['a','b'],['b','d'],['d','e'],['e','c'],['d','f']];
   const buildings = [
@@ -42,71 +42,43 @@
   function selectedName(id) { return names[id] + (id===state.a&&id===state.b?' · A + B':id===state.a?' · A':id===state.b?' · B':''); }
   function location(p) {return '('+p.x.toFixed(1)+', '+(160-p.z).toFixed(1)+') m';}
   const world=$('world');
-  const defs=svg('defs',{},world);
-  const pattern=svg('pattern',{id:'grid',width:20,height:20,patternUnits:'userSpaceOnUse'},defs);
-  svg('path',{d:'M 20 0 L 0 0 0 20',fill:'none',stroke:'#dfe5da','stroke-width':.35},pattern);
-  const map=svg('g',{transform:'translate(44 30) scale(2.8)'},world);
-  svg('rect',{x:0,y:0,width:240,height:160,rx:4,fill:'#edf1e8',stroke:'#d4dece','stroke-width':.6},map);
-  svg('rect',{x:0,y:0,width:240,height:160,fill:'url(#grid)'},map);
-  // Landscape is schematic; pale paving and garden planting are passable.
-  svg('path',{d:'M 0 80 H 240 M 110 0 V 160',fill:'none',stroke:'#f8faf3','stroke-width':19},map);
-  svg('rect',{x:10,y:104,width:34,height:44,rx:12,fill:'#dbe6d1'},map);
-  svg('rect',{x:176,y:70,width:52,height:29,rx:12,fill:'#dbe6d1'},map);
-  [[18,115],[22,134],[32,123],[186,85],[204,82],[218,88],[86,10],[151,15]].forEach(([x,z])=>{
-    svg('circle',{cx:x,cy:z,r:3.3,fill:'#bbceb1'},map);
-    svg('circle',{cx:x-.7,cy:z-.7,r:2.1,fill:'#c9d9c0'},map);
-  });
-  buildings.forEach(b=>{
-    svg('rect',{x:b.x+1,y:b.z+1.7,width:b.w,height:b.h,rx:1.5,fill:'#c4cdc0',opacity:.7},map);
-    svg('rect',{x:b.x,y:b.z,width:b.w,height:b.h,rx:1.5,fill:'#fdfcf8',stroke:'#bac6b3','stroke-width':.6},map);
-    svg('rect',{x:b.x+2,y:b.z+2,width:b.w-4,height:b.h-4,rx:1,fill:'none',stroke:'#e5e7df','stroke-width':.5},map);
-    label(map,b.name,b.x+b.w/2,b.z+b.h/2+1,{'text-anchor':'middle','font-size':3.1,fill:'#6c7866','letter-spacing':.35});
-  });
-  svg('circle',{cx:pond.x,cy:pond.z,r:pond.radius+2.4,fill:'#e2e3d6'},map);
-  svg('circle',{cx:pond.x,cy:pond.z,r:pond.radius,fill:'#c5e2df',stroke:'#a9cfca','stroke-width':.6},map);
-  [8,14,20].forEach(r=>svg('path',{d:`M ${pond.x-r} ${pond.z+3} Q ${pond.x} ${pond.z-3} ${pond.x+r} ${pond.z+3}`,fill:'none',stroke:'#afd4cf','stroke-width':.5},map));
-  label(map,'REFLECTING POND',pond.x,pond.z-7,{'text-anchor':'middle','font-size':3,fill:'#5c8b84','letter-spacing':.35});
-  label(map,'WEST GARDEN',23,155,{'text-anchor':'middle','font-size':2.8,fill:'#7a8b72','letter-spacing':.25});
-  label(map,'EAST LAWN',202,105,{'text-anchor':'middle','font-size':2.8,fill:'#7a8b72','letter-spacing':.25});
-  label(world,'N',724,28,{'font-size':11,fill:'#66756a','text-anchor':'middle'});
-  svg('path',{d:'M724 54 V36 M720 42 L724 36 L728 42',fill:'none',stroke:'#66756a','stroke-width':1.3},world);
-  svg('path',{d:'M44 499 v-5 M44 499 h112 M156 499 v-5',fill:'none',stroke:'#66756a','stroke-width':1},world);
-  label(world,'40 m',100,516,{'font-size':11,fill:'#66756a','text-anchor':'middle'});
-  label(world,'Origin (0, 0) · southwest',705,516,{'font-size':11,fill:'#66756a','text-anchor':'end'});
-  const routeLine=svg('path',{fill:'none',stroke:'#9b7841','stroke-width':1.2,'stroke-linejoin':'round','stroke-linecap':'round','stroke-dasharray':'2.2 1.4'},map);
-  const directLine=svg('line',{stroke:'#176c60','stroke-width':.8,'stroke-dasharray':'2 1.2',opacity:.9},map);
-  const agentNodes=new Map();
-  ids.forEach(id=>{
-    const group=svg('g',{'data-person':id,class:'agent',tabindex:0,role:'button','aria-label':'Select '+names[id]+' as occupant B'},map);
-    const title=svg('title',{},group);title.textContent=names[id];
-    const halo=svg('circle',{r:4.5,fill:'none',stroke:colors[id],'stroke-width':.6,opacity:.45},group);
-    svg('circle',{r:2.8,fill:colors[id],stroke:'#ffffff','stroke-width':.7},group);
-    label(group,id.toUpperCase(),0,1.05,{'text-anchor':'middle','font-size':2.8,'font-weight':600,fill:'white'});
-    const name=label(group,names[id],0,-6.2,{'text-anchor':'middle','font-size':3.8,'font-weight':600,fill:'#273d32','paint-order':'stroke',stroke:'#f3f6ef','stroke-width':1.5,'stroke-linejoin':'round',class:'agent-label'});
-    agentNodes.set(id,{group,halo,name});
-    const choose=()=>{state.b=id;state.scenario='';syncControls();refresh();};
-    group.addEventListener('click',e=>{if(state.placing)return;e.stopPropagation();choose();});
-    group.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}});
-  });
-  function drawMap() {
-    const a=state.positions[state.a],b=state.positions[state.b];
-    for(const [id,node] of agentNodes) {
-      const p=state.positions[id];node.group.setAttribute('transform',`translate(${p.x} ${p.z})`);
-      const active=id===state.a||id===state.b;node.halo.setAttribute('r',active?5:3.8);node.halo.setAttribute('opacity',active?.8:.15);node.name.textContent=selectedName(id);
-    }
-    for(const [k,v] of Object.entries({x1:a.x,y1:a.z,x2:b.x,y2:b.z}))directLine.setAttribute(k,v);
+  let plaza,measurement;
+  function placePerson(point) {
+    if(!state.placing)return;
+    if(router.pointStatus(point)!=='ok'){error('Choose clear ground outside the pond and buildings.');return;}
+    state.positions[state.b]={x:point.x,z:point.z};walks.delete(state.b);state.placing=false;state.scenario='';error();syncControls();refresh();
   }
+  try {
+    plaza=window.createPlazaScene({host:world,buildings,pond,names,colors,
+      onSelect:id=>{if(state.placing)return;state.b=id;state.scenario='';syncControls();refresh();},
+      onPlace:placePerson,onViewChange:view=>document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)))});
+  } catch(sceneError) {
+    const notice=document.createElement('p');notice.className='scene-unavailable';notice.textContent='The 3D view needs WebGL. Measurements, friendship editing and the comparison chart remain available.';world.appendChild(notice);
+    console.error(sceneError);
+  }
+  function drawMap() {
+    if(plaza)plaza.update({positions:state.positions,a:state.a,b:state.b,playing:state.playing,
+      path:measurement?.walking.path||[],spatial:measurement?.spatial||0,social:measurement?.social.distance??0,edges:state.edges});
+  }
+  document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
+    document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    plaza?.setView(button.dataset.view);
+  }));
+  $('reset-view').addEventListener('click',()=>{
+    document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view==='perspective')));
+    plaza?.setView('perspective');plaza?.resetView();
+  });
   function drawNetwork(result) {
     const host=$('network');host.replaceChildren();
     const pos={a:[32,82],b:[97,32],d:[181,32],f:[290,80],e:[181,127],c:[97,127]};
     const activeEdges=new Set(result.path.slice(1).map((id,i)=>key(result.path[i],id)));
-    state.edges.forEach(([a,b])=>{const active=activeEdges.has(key(a,b));svg('line',{x1:pos[a][0],y1:pos[a][1],x2:pos[b][0],y2:pos[b][1],stroke:active?'#c05c3c':'#d9dfd7','stroke-width':active?3:1.5},host);});
+    state.edges.forEach(([a,b])=>{const active=activeEdges.has(key(a,b));svg('line',{x1:pos[a][0],y1:pos[a][1],x2:pos[b][0],y2:pos[b][1],stroke:active?'#99cbc2':'#384446','stroke-width':active?3:1.5},host);});
     ids.forEach(id=>{
       const [x,y]=pos[id],selected=id===state.a||id===state.b;
       if(selected)svg('circle',{cx:x,cy:y,r:15,fill:'none',stroke:colors[id],'stroke-width':1.5},host);
-      svg('circle',{cx:x,cy:y,r:11,fill:result.path.includes(id)?colors[id]:'#e5eae2'},host);
-      label(host,id.toUpperCase(),x,y+3.5,{'text-anchor':'middle','font-size':10,'font-weight':600,fill:result.path.includes(id)?'white':'#62715e'});
-      label(host,names[id],x,y+28,{'text-anchor':'middle','font-size':10,fill:'#677462'});
+      svg('circle',{cx:x,cy:y,r:11,fill:result.path.includes(id)?colors[id]:'#263236'},host);
+      label(host,id.toUpperCase(),x,y+3.5,{'text-anchor':'middle','font-size':10,'font-weight':600,fill:result.path.includes(id)?'#172020':'#b6beb7'});
+      label(host,names[id],x,y+28,{'text-anchor':'middle','font-size':10,fill:'#a3b0ab'});
     });
   }
   function drawChart() {
@@ -115,18 +87,18 @@
     const values=ids.map(id=>({id,x:D.euclidean(state.positions[state.a],state.positions[id]),y:social(state.a,id).distance}));
     const maximum=Math.max(200,Math.ceil(Math.max(...values.map(p=>p.x))/50)*50);
     const x=v=>ox+width*v/maximum,y=v=>Number.isFinite(v)?oy-v*height/5:32;
-    svg('rect',{x:ox,y:y(1),width:width*40/maximum,height:height/5,fill:'#e5f0e9'},host);
+    svg('rect',{x:ox,y:y(1),width:width*40/maximum,height:height/5,fill:'#223832'},host);
     for(let hop=0;hop<=5;hop++) {
-      svg('line',{x1:ox,y1:y(hop),x2:ox+width,y2:y(hop),stroke:'#e7eae3','stroke-width':1},host);
-      label(host,String(hop),ox-10,y(hop)+4,{'text-anchor':'end','font-size':10,fill:'#71806c'});
+      svg('line',{x1:ox,y1:y(hop),x2:ox+width,y2:y(hop),stroke:'#303b3b','stroke-width':1},host);
+      label(host,String(hop),ox-10,y(hop)+4,{'text-anchor':'end','font-size':10,fill:'#a1b1ab'});
     }
-    svg('line',{x1:ox,y1:32,x2:ox+width,y2:32,stroke:'#d6dcd0','stroke-dasharray':'3 4'},host);
-    label(host,'∞',ox-10,36,{'text-anchor':'end','font-size':13,fill:'#71806c'});
-    label(host,'SOCIAL · LINKS',ox,13,{'font-size':10,fill:'#8d563d','letter-spacing':.6});
-    for(let t=0;t<=maximum;t+=50)label(host,String(t),x(t),oy+19,{'text-anchor':'middle','font-size':10,fill:'#71806c'});
-    label(host,'SPATIAL · METRES',ox+width,oy+42,{'text-anchor':'end','font-size':10,fill:'#176c60','letter-spacing':.6});
-    svg('line',{x1:x(40),y1:60,x2:x(40),y2:oy,stroke:'#b4c7b4','stroke-dasharray':'3 4'},host);
-    label(host,'40 m',x(40)+4,61,{'font-size':9,fill:'#71806c'});
+    svg('line',{x1:ox,y1:32,x2:ox+width,y2:32,stroke:'#4a5654','stroke-dasharray':'3 4'},host);
+    label(host,'∞',ox-10,36,{'text-anchor':'end','font-size':13,fill:'#a1b1ab'});
+    label(host,'SOCIAL · LINKS',ox,13,{'font-size':10,fill:'#99cbc2','letter-spacing':.6});
+    for(let t=0;t<=maximum;t+=50)label(host,String(t),x(t),oy+19,{'text-anchor':'middle','font-size':10,fill:'#a1b1ab'});
+    label(host,'SPATIAL · METRES',ox+width,oy+42,{'text-anchor':'end','font-size':10,fill:'#efbc77','letter-spacing':.6});
+    svg('line',{x1:x(40),y1:60,x2:x(40),y2:oy,stroke:'#52645b','stroke-dasharray':'3 4'},host);
+    label(host,'40 m',x(40)+4,61,{'font-size':9,fill:'#a1b1ab'});
     values.forEach(p=>{
       if(p.id===state.b)svg('circle',{cx:x(p.x),cy:y(p.y),r:8,fill:'none',stroke:colors[p.id],'stroke-width':1.5},host);
       const dot=svg('circle',{cx:x(p.x),cy:y(p.y),r:4.3,fill:colors[p.id]},host);
@@ -146,8 +118,7 @@
     return who+': far in both space and the social network.';
   }
   function refresh(updateFields=true) {
-    const result=measure();drawMap();
-    routeLine.setAttribute('d',result.walking.path.map((p,i)=>(i?'L':'M')+p.x+' '+p.z).join(' '));
+    const result=measure();measurement=result;drawMap();
     $('spatial-value').textContent=fmt(result.spatial);
     $('social-value').textContent=Number.isFinite(result.social.distance)?String(result.social.distance):'∞';
     $('social-unit').textContent=result.social.connected?(result.social.distance===1?'friendship link':'friendship links'):'no connecting chain';
@@ -168,11 +139,11 @@
     document.querySelectorAll('[data-scenario]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.scenario===state.scenario)));
     $('move-on-map').setAttribute('aria-pressed',String(state.placing));
     $('move-on-map').textContent=state.placing?'Cancel placing':'Place person B';
-    $('map-instruction').textContent=state.placing?'Click clear ground to place '+names[state.b]+' (occupant B).':'Select a person on the map as B, or use the pair selectors.';
-    world.style.cursor=state.placing?'crosshair':'';
+    $('map-instruction').textContent=state.placing?'Click clear ground to place '+names[state.b]+' (occupant B).':'Drag to orbit · scroll to zoom · select a person';
+    plaza?.setPlacing(state.placing);world.style.cursor=state.placing?'crosshair':'';
     for(const input of $('ties').querySelectorAll('input'))input.checked=state.edges.some(([a,b])=>key(a,b)===input.value);
   }
-  function pause(syncFields=true) {state.playing=false;$('play').textContent='▶ Run simulation';$('run-state').textContent='Paused';$('run-state').classList.remove('running');if(syncFields)syncPositionFields();}
+  function pause(syncFields=true) {state.playing=false;$('play').textContent='▶ Run simulation';$('run-state').textContent='Paused';$('run-state').classList.remove('running');if(syncFields)syncPositionFields();drawMap();}
   function preset(which) {
     pause();walks.clear();error();state.positions=structuredClone(basePositions);state.edges=structuredClone(defaultEdges);state.a='a';state.b={far:'b',near:'c',detour:'d'}[which];state.scenario=which;state.placing=false;
     if(which==='detour'){state.positions.a={x:77,z:80};state.positions.d={x:143,z:80};}
@@ -191,13 +162,6 @@
   $('reset').addEventListener('click',()=>preset('far'));
   $('speed').addEventListener('change',()=>state.speed=Number($('speed').value));
   $('move-on-map').addEventListener('click',()=>{pause();state.placing=!state.placing;error();syncControls();});
-  world.addEventListener('click',event=>{
-    if(!state.placing)return;
-    const screen=world.createSVGPoint();screen.x=event.clientX;screen.y=event.clientY;
-    const p=screen.matrixTransform(map.getScreenCTM().inverse());const point={x:p.x,z:p.y};
-    if(router.pointStatus(point)!=='ok'){error('Choose clear ground inside the plaza, outside the pond and buildings.');return;}
-    state.positions[state.b]=point;walks.delete(state.b);state.placing=false;state.scenario='';error();syncControls();refresh();
-  });
   function parsePosition(value) {
     const number='[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)';
     const match=value.match(new RegExp('^\\s*('+number+')\\s*,\\s*('+number+')\\s*$'));
@@ -230,7 +194,7 @@
     }
   }
   $('play').addEventListener('click',()=>{
-    if(state.playing){pause();return;}
+    if(state.playing){pause();refresh();return;}
     state.playing=true;state.placing=false;state.scenario='';error();syncControls();$('play').textContent='Ⅱ Pause simulation';$('run-state').textContent='Running';$('run-state').classList.add('running');lastTime=0;
   });
   function tick(time) {

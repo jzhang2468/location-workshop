@@ -1,55 +1,59 @@
-# Location Workshop
+# Common Ground — a distance simulation
 
-An interactive Three.js workshop for describing location and space in Washington Square Park, New York City.
+An interactive simulation of six visitors in a fictional 240 × 160 m plaza. Ava, Ben, Cleo, Dev, Emi, and Finn can be physically close while socially far apart, or physically far apart while directly connected.
 
-Each modeled space has a stable address, coordinates, and an occupancy record. Explore the same place through five views:
+## Explore
 
-- **Coordinate system:** locate a space by its ID, local east/north coordinates, or latitude and longitude.
-- **Object → location:** select the arch, fountain, workshop bench, or simulated visitor.
-- **Location → occupant:** inspect a ground point and move the visitor to clear ground.
-- **Reference frame:** compare compass directions with the visitor's viewpoint.
-- **Infer a location:** use clues to narrow a set of candidate places.
+- Select a pair of visitors to compare their occupied locations and distances.
+- Play or pause the simulation as visitors walk along waypoint routes.
+- Choose occupant B, then click “Place person B” and select clear ground to relocate them. You can also edit both occupants’ coordinates.
+- Edit friendship links to change the social network independently of visitors' physical positions.
+- Try **Far away. Still a friend.**, **Nearby. Socially distant.**, and **Across the water.** presets to explore contrasting kinds of closeness.
 
-## Run
+The map visualizes the selected spatial connection and obstacle-aware route. The friendship network shows social connections and the shortest friendship chain. A two-axis scatterplot compares physical distance in metres with social distance in hops, keeping the two units distinct.
 
-Open index.html in a modern browser, or serve this directory:
+## Two forms of distance
 
-    python3 -m http.server 8000
+**Physical distance** is the Euclidean straight-line distance between two ground coordinates, measured in simulated metres. Moving a visitor changes the distance between their occupied location and other locations.
+
+**Social distance** is the shortest chain of friendship links between two visitors in a fictional, undirected graph, measured in hops. Direct friends are one hop apart; an indirect connection requires multiple hops. A visitor's distance to themself is zero. Disconnected visitors have no finite social distance, represented as infinity rather than a large finite number.
+
+Friendship-hop distance is a metric within each connected component. Social distance between locations is inferred from the visitors occupying them: it is not an intrinsic property of geography, and an unoccupied point has no assigned social distance. Social distance here describes network connections, not physical separation or health guidance.
+
+The **Far friends** and **Near strangers** scenarios demonstrate why a visitor can be near a location under one metric and far from it under another. The scatterplot shows the comparison without converting metres into friendship hops.
+
+## Bonus: routes around obstacles
+
+The route measurement finds a shortest path in a navigation graph sampled on a 2 m grid, then simplifies it using collision-checked line-of-sight segments. It avoids the plaza's modeled obstacles and stays inside the plaza boundary. Its length is the sum of the final route segments and can exceed the direct Euclidean distance. Visitors follow waypoint routes when moving; the **Detour** preset highlights how an obstacle changes a route.
+
+The plaza, visitors, friendships, and movement are fictional. Routing treats visitors as points without body-width clearance. The route is an approximation within the model, not a claim about an exact continuous shortest path, observed pedestrian behavior, or real-world accessibility.
+
+## Run and edit
+
+Open [index.html](index.html) in a modern browser, or serve this directory:
+
+```sh
+python3 -m http.server 8000
+```
 
 Then visit [localhost:8000](http://localhost:8000).
 
-WebGL and an internet connection are required. Three.js 0.160.1 and D3 7.9.0 load from pinned jsDelivr URLs. No API keys or backend are required.
+No build step, external libraries, API keys, or backend are required. Keep the following files together when copying or hosting the simulation:
 
-## Edit and rebuild
+- [index.html](index.html): page structure and controls.
+- [assets/simulation.css](assets/simulation.css): layout and visual styling.
+- [src/simulation.js](src/simulation.js): simulation state, interactions, movement, and visualization.
+- [src/distance-math.js](src/distance-math.js): physical, social, and routing calculations.
 
-The readable HTML, CSS, and JavaScript source is in [src/workshop.html](src/workshop.html). After editing, regenerate the standalone page:
+Edits to these files are reflected when the page reloads. The site can be hosted as static files, including on GitHub Pages.
 
-    python3 scripts/render.py src/workshop.html index.html --force --title "Location Workshop"
+## Verify calculations
 
-The renderer uses only the Python standard library and the checked-in assets. It includes standalone styles and local browser state persistence, so the exported simulation runs outside Codex.
+With Node.js installed, run the distance and routing checks:
 
-## Coordinate conventions
+```sh
+node scripts/test-distance-math.cjs
+node scripts/test-simulation-routes.cjs
+```
 
-- The local coordinate origin defaults to the fountain. The arch midpoint can be selected as an alternative origin.
-- **X** increases east and **Y** increases north; both use approximate metres. Queries refer to ground level.
-- Internally, the 3D engine uses east as X, elevation as Y, and south as Z.
-- Grid cells are 20 × 20 m. Columns A–Q increase west to east; rows 01–15 increase south to north.
-- The fixed grid starts 180 m west and 140 m south of the fountain. Changing the displayed origin does not change cell IDs.
-- A space ID such as WSP-K10 selects the cell's center. Boundary cells may extend beyond the park; the result identifies points outside the park.
-- Object locations use ground anchors. Cell occupancy uses footprint intersection, while point occupancy tests the actual ground footprint. Thus a cell may contain the arch's piers while a point beneath its opening is clear.
-
-This is an educational model, not a survey, cadastral system, or live occupancy map.
-
-## Data and attribution
-
-Park and landmark footprints are based on [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/).
-
-- [Washington Square Park, way 22899302](https://www.openstreetmap.org/way/22899302)
-- [Washington Square Arch, way 248166269](https://www.openstreetmap.org/way/248166269)
-- [Washington Square Fountain, way 959929617](https://www.openstreetmap.org/way/959929617)
-
-The source geometry snapshot is in [data/landmarks.geojson](data/landmarks.geojson); the running page embeds its geometry. Architecture, planting, paths, the bench, visitor, and workshop grid are simplified or illustrative. Geographic coordinate readouts are approximate.
-
-## Verification
-
-The standalone export was checked in Chrome for coordinate lookup, cell addressing, origin changes, GPS round trips, point occupancy, visitor placement, input validation, saved state, and layouts down to 320 px.
+These checks cover metric properties and the actual map geometry, including 151 routes. The replacement was also checked in-browser for all three presets, play/pause, map placement, coordinate validation, co-located people, identity, disconnected friendships, and layouts at 320, 900, and 1360 px.
